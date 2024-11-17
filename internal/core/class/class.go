@@ -18,13 +18,17 @@ func all() []Class {
 var (
 	forever = time.Duration(1<<63 - 1)
 
-	Naked   = Class{}
+	Naked = Class{
+		name: "Naked",
+	}
 	Diamond = Class{
+		name: "Diamond",
 		armourTiers: [4]item.ArmourTier{
 			item.ArmourTierDiamond{}, item.ArmourTierDiamond{}, item.ArmourTierDiamond{}, item.ArmourTierDiamond{},
 		},
 	}
 	Bard = Class{
+		name: "Bard",
 		armourTiers: [4]item.ArmourTier{
 			item.ArmourTierGold{}, item.ArmourTierGold{}, item.ArmourTierGold{}, item.ArmourTierGold{},
 		},
@@ -33,6 +37,7 @@ var (
 		},
 	}
 	Rogue = Class{
+		name: "Rogue",
 		armourTiers: [4]item.ArmourTier{
 			item.ArmourTierChain{}, item.ArmourTierChain{}, item.ArmourTierChain{}, item.ArmourTierChain{},
 		},
@@ -41,6 +46,7 @@ var (
 		},
 	}
 	Archer = Class{
+		name: "Archer",
 		armourTiers: [4]item.ArmourTier{
 			item.ArmourTierLeather{}, item.ArmourTierLeather{}, item.ArmourTierLeather{}, item.ArmourTierLeather{},
 		},
@@ -51,8 +57,13 @@ var (
 )
 
 type Class struct {
+	name        string
 	armourTiers [4]item.ArmourTier
 	effects     []effect.Effect
+}
+
+func (c Class) Name() string {
+	return c.name
 }
 
 func Is(initial, expected Class) bool {
@@ -62,6 +73,15 @@ func Is(initial, expected Class) bool {
 func Of(p *player.Player) Class {
 	for _, c := range all() {
 		if armourIs(p.Armour(), c) {
+			return c
+		}
+	}
+	return Naked
+}
+
+func OfTiers(tiers [4]item.ArmourTier) Class {
+	for _, c := range all() {
+		if reflect.DeepEqual(c.armourTiers, tiers) {
 			return c
 		}
 	}
