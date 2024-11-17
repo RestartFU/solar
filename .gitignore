@@ -26,3 +26,7 @@ go.work.sum
 
 # ide
 .idea/
+
+world/
+players/
+resources/

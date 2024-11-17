@@ -9,7 +9,7 @@ import (
 
 type DebugActiveClass struct {
 	playerAllower
-	cmd.SubCommand `cmd:"active_class"`
+	Sub cmd.SubCommand `cmd:"class"`
 }
 
 func (DebugActiveClass) Run(src cmd.Source, out *cmd.Output) {

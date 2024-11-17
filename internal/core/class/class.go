@@ -66,6 +66,10 @@ func (c Class) Name() string {
 	return c.name
 }
 
+func (c Class) Effects() []effect.Effect {
+	return c.effects
+}
+
 func Is(initial, expected Class) bool {
 	return reflect.DeepEqual(initial, expected)
 }
