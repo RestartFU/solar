@@ -5,7 +5,7 @@ import (
 	"github.com/df-mc/dragonfly/server/item/inventory"
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/restartfu/solar/internal/core/class"
-	"github.com/sandertv/gophertunnel/minecraft/text"
+	"github.com/restartfu/solar/internal/core/message"
 )
 
 type ArmourHandler struct {
@@ -42,7 +42,7 @@ func (h *ArmourHandler) HandleTake(ctx *inventory.Context, slot int, _ item.Stac
 	tiers[slot] = nil
 
 	newClass := class.OfTiers(tiers)
-	p.Message(text.Colourf("<blue>your current class:</blue> <yellow>%s</yellow>", class.NameOf(newClass)))
+	p.Message(message.Class.Enabled(newClass))
 
 	h.playerHandler.activeClass = newClass
 }
@@ -80,7 +80,7 @@ func (h *ArmourHandler) HandlePlace(ctx *inventory.Context, _ int, stack item.St
 	}
 
 	newClass := class.OfTiers(tiers)
-	p.Message(text.Colourf("<blue>your current class:</blue> <yellow>%s</yellow>", class.NameOf(newClass)))
+	p.Message(message.Class.Enabled(newClass))
 
 	h.playerHandler.activeClass = newClass
 }
@@ -109,7 +109,7 @@ func (h *ArmourHandler) HandleDrop(ctx *inventory.Context, slot int, _ item.Stac
 	tiers[slot] = nil
 
 	newClass := class.OfTiers(tiers)
-	p.Message(text.Colourf("<blue>your current class:</blue> <yellow>%s</yellow>", class.NameOf(newClass)))
+	p.Message(message.Class.Enabled(newClass))
 
 	h.playerHandler.activeClass = newClass
 }
