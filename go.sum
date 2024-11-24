@@ -6,8 +6,8 @@ github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ3
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/df-mc/dragonfly v0.9.19-0.20241117000415-ba837da08ac1 h1:RRV/AhISlOWTgodLO97lV+D3KMAo0ZaNodD+3cQZ4XM=
-github.com/df-mc/dragonfly v0.9.19-0.20241117000415-ba837da08ac1/go.mod h1:WUHhJftm79ctWLXy+eBm1URymVSP4wDJX5HoaaS1iP0=
+github.com/df-mc/dragonfly v0.9.20-0.20241124175346-cf9ce4ee3ecc h1:s8wsxzK9wh6lxgr7TnCokBe9DRhrvj8xQSVsGE1Jec8=
+github.com/df-mc/dragonfly v0.9.20-0.20241124175346-cf9ce4ee3ecc/go.mod h1:PL0I6xzy+HpgsMSI1UdJPFlCaWaMS4juq0xppV7zdWA=
 github.com/df-mc/goleveldb v1.1.9 h1:ihdosZyy5jkQKrxucTQmN90jq/2lUwQnJZjIYIC/9YU=
 github.com/df-mc/goleveldb v1.1.9/go.mod h1:+NHCup03Sci5q84APIA21z3iPZCuk6m6ABtg4nANCSk=
 github.com/df-mc/worldupgrader v1.0.18 h1:Q34X9ID/hGuDyj9oiq+dpyjOaJdNxhVmVUepf/EPYDA=

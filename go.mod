@@ -3,7 +3,7 @@ module github.com/restartfu/solar
 go 1.23.2
 
 require (
-	github.com/df-mc/dragonfly v0.9.19-0.20241117000415-ba837da08ac1
+	github.com/df-mc/dragonfly v0.9.20-0.20241124175346-cf9ce4ee3ecc
 	github.com/restartfu/gophig v0.0.1
 	github.com/sandertv/gophertunnel v1.42.2
 )

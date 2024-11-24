@@ -5,9 +5,17 @@ import (
 	"github.com/df-mc/dragonfly/server/item"
 	"github.com/df-mc/dragonfly/server/item/inventory"
 	"github.com/df-mc/dragonfly/server/player"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 	"reflect"
 	"time"
 )
+
+type Class interface {
+	inventory.Handler
+	Tiers() [4]item.ArmourTier
+	Effects() []effect.Type
+}
 
 func all() []Class {
 	return []Class{
@@ -16,59 +24,15 @@ func all() []Class {
 }
 
 var (
-	forever = time.Duration(1<<63 - 1)
+	forever    = time.Duration(1<<63 - 1)
+	titleCaser = cases.Title(language.English)
 
-	Naked = Class{
-		name: "Naked",
-	}
-	Diamond = Class{
-		name: "Diamond",
-		armourTiers: [4]item.ArmourTier{
-			item.ArmourTierDiamond{}, item.ArmourTierDiamond{}, item.ArmourTierDiamond{}, item.ArmourTierDiamond{},
-		},
-	}
-	Bard = Class{
-		name: "Bard",
-		armourTiers: [4]item.ArmourTier{
-			item.ArmourTierGold{}, item.ArmourTierGold{}, item.ArmourTierGold{}, item.ArmourTierGold{},
-		},
-		effects: []effect.Effect{
-			effect.New(effect.Speed{}, 2, forever),
-		},
-	}
-	Rogue = Class{
-		name: "Rogue",
-		armourTiers: [4]item.ArmourTier{
-			item.ArmourTierChain{}, item.ArmourTierChain{}, item.ArmourTierChain{}, item.ArmourTierChain{},
-		},
-		effects: []effect.Effect{
-			effect.New(effect.Speed{}, 2, forever),
-		},
-	}
-	Archer = Class{
-		name: "Archer",
-		armourTiers: [4]item.ArmourTier{
-			item.ArmourTierLeather{}, item.ArmourTierLeather{}, item.ArmourTierLeather{}, item.ArmourTierLeather{},
-		},
-		effects: []effect.Effect{
-			effect.New(effect.Speed{}, 2, forever),
-		},
-	}
+	Naked   = naked{}
+	Diamond = diamond{}
+	Bard    = bard{}
+	Rogue   = rogue{}
+	Archer  = archer{}
 )
-
-type Class struct {
-	name        string
-	armourTiers [4]item.ArmourTier
-	effects     []effect.Effect
-}
-
-func (c Class) Name() string {
-	return c.name
-}
-
-func (c Class) Effects() []effect.Effect {
-	return c.effects
-}
 
 func Is(initial, expected Class) bool {
 	return reflect.DeepEqual(initial, expected)
@@ -85,15 +49,20 @@ func Of(p *player.Player) Class {
 
 func OfTiers(tiers [4]item.ArmourTier) Class {
 	for _, c := range all() {
-		if reflect.DeepEqual(c.armourTiers, tiers) {
+		if reflect.DeepEqual(c.Tiers(), tiers) {
 			return c
 		}
 	}
 	return Naked
 }
 
+func NameOf(c Class) string {
+	className := reflect.TypeOf(c).Name()
+	return titleCaser.String(className)
+}
+
 func armourIs(armour *inventory.Armour, expected Class) bool {
-	tiers := expected.armourTiers
+	tiers := expected.Tiers()
 	return pieceIsTier(armour.Helmet(), tiers[0]) &&
 		pieceIsTier(armour.Chestplate(), tiers[1]) &&
 		pieceIsTier(armour.Leggings(), tiers[2]) &&

@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/df-mc/dragonfly/server"
 	"github.com/df-mc/dragonfly/server/cmd"
-	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/dragonfly/server/player/chat"
 	"github.com/restartfu/gophig"
 	"github.com/restartfu/solar/internal/adapter/command"
@@ -31,14 +30,15 @@ func main() {
 	srv.CloseOnProgramEnd()
 
 	srv.Listen()
-	for srv.Accept(accept) {
-	}
-}
+	for p := range srv.Accept() {
+		playerHandler := handler.NewPlayerHandler(p)
+		inventoryHandler := handler.NewInventoryHandler(playerHandler)
+		armourHandler := handler.NewArmourHandler(playerHandler)
 
-func accept(p *player.Player) {
-	h := handler.NewHandler(p)
-	p.Handle(h)
-	p.Armour().Handle(h)
+		p.Inventory().Handle(inventoryHandler)
+		p.Armour().Handle(armourHandler)
+		p.Handle(playerHandler)
+	}
 }
 
 func readConfig(log *slog.Logger) (server.Config, error) {
