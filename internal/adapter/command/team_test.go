@@ -14,10 +14,13 @@ import (
 	"testing"
 )
 
-const mockPlayerName = "testPlayer"
+const (
+	mockPlayerName = "testPlayer"
+	mockTeamName   = "testTeam"
+)
 
 func TestTeamCreate(t *testing.T) {
-	mockTeam := team.NewTeam("testTeam", mockPlayerName)
+	mockTeam := team.NewTeam(mockTeamName, mockPlayerName)
 
 	for _, tc := range []struct {
 		name      string
@@ -32,7 +35,7 @@ func TestTeamCreate(t *testing.T) {
 	}{
 		{
 			name:      "team is successfully created",
-			arguments: []string{"testTeam"},
+			arguments: []string{mockTeamName},
 			setup: func(t *testing.T,
 				mockStringWriter *testutil.StringWriter,
 				mockMessageWriter *testutil.StringWriter,
@@ -40,14 +43,14 @@ func TestTeamCreate(t *testing.T) {
 				mockPlayer *player.Player,
 				tx *world.Tx,
 			) {
-				mockDatabase.EXPECT().LoadTeam("testTeam").Return(team.Team{}, false)
-				mockStringWriter.EXPECT(message.Team.CreateSuccess("testTeam", mockPlayerName))
+				mockDatabase.EXPECT().LoadTeam(mockTeamName).Return(team.Team{}, false)
+				mockStringWriter.EXPECT(message.Team.CreateSuccess(mockTeamName, mockPlayerName))
 				mockDatabase.EXPECT().SaveTeam(mockTeam)
 			},
 		},
 		{
 			name:      "team with name already exists",
-			arguments: []string{"testTeam"},
+			arguments: []string{mockTeamName},
 			setup: func(t *testing.T,
 				mockStringWriter *testutil.StringWriter,
 				mockMessageWriter *testutil.StringWriter,
@@ -55,8 +58,8 @@ func TestTeamCreate(t *testing.T) {
 				mockPlayer *player.Player,
 				tx *world.Tx,
 			) {
-				mockDatabase.EXPECT().LoadTeam("testTeam").Return(team.Team{}, true)
-				mockMessageWriter.EXPECT(message.Team.CreateAlreadyExists("testTeam"))
+				mockDatabase.EXPECT().LoadTeam(mockTeamName).Return(team.Team{}, true)
+				mockMessageWriter.EXPECT(message.Team.CreateAlreadyExists(mockTeamName))
 			},
 		},
 	} {
