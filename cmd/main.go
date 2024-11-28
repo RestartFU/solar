@@ -1,20 +1,25 @@
 package main
 
 import (
+	"log/slog"
+	"os"
+
 	"github.com/df-mc/dragonfly/server"
 	"github.com/df-mc/dragonfly/server/cmd"
 	"github.com/df-mc/dragonfly/server/player/chat"
 	"github.com/restartfu/gophig"
 	"github.com/restartfu/solar/internal/adapter/command"
 	"github.com/restartfu/solar/internal/adapter/handler"
-	"log/slog"
-	"os"
+	"github.com/restartfu/solar/internal/core/class"
 )
 
 func main() {
 	for _, c := range []cmd.Command{
 		cmd.New("debug", "", nil,
 			command.DebugActiveClass{},
+		),
+		cmd.New("team", "", nil,
+			command.TeamCreate{},
 		),
 	} {
 		cmd.Register(c)
@@ -31,7 +36,9 @@ func main() {
 
 	srv.Listen()
 	for p := range srv.Accept() {
-		playerHandler := handler.NewPlayerHandler(p)
+		classOf := class.Of(p)
+
+		playerHandler := handler.NewPlayerHandler(classOf)
 		inventoryHandler := handler.NewInventoryHandler(playerHandler)
 		armourHandler := handler.NewArmourHandler(playerHandler)
 

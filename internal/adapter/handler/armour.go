@@ -8,9 +8,9 @@ import (
 	"github.com/restartfu/solar/internal/core/message"
 )
 
-type ArmourHandler struct {
-	inventory.NopHandler
+var _ inventory.Handler = &ArmourHandler{}
 
+type ArmourHandler struct {
 	playerHandler *PlayerHandler
 }
 
