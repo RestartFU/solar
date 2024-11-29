@@ -28,8 +28,8 @@ func TestTeamCreate(t *testing.T) {
 	for _, tc := range []struct {
 		name  string
 		setup func(t *testing.T,
-			mockStringWriter *testutil.StringWriter,
-			mockMessageWriter *testutil.StringWriter,
+			mockSubscriber *testutil.Subscriber,
+			mockMessenger *testutil.Messenger,
 			mockDatabase *mocks.MockDatabase,
 			mockPlayer *player.Player,
 			tx *world.Tx,
@@ -38,28 +38,28 @@ func TestTeamCreate(t *testing.T) {
 		{
 			name: "team is successfully created",
 			setup: func(t *testing.T,
-				mockStringWriter *testutil.StringWriter,
-				mockMessageWriter *testutil.StringWriter,
+				mockSubscriber *testutil.Subscriber,
+				mockMessenger *testutil.Messenger,
 				mockDatabase *mocks.MockDatabase,
 				mockPlayer *player.Player,
 				tx *world.Tx,
 			) {
 				mockDatabase.EXPECT().LoadTeam(mockTeamName).Return(team.Team{}, false)
-				mockStringWriter.EXPECT(message.Team.CreateSuccess(mockTeamName, mockPlayerName))
+				mockSubscriber.EXPECT(message.Team.CreateSuccess(mockTeamName, mockPlayerName))
 				mockDatabase.EXPECT().SaveTeam(mockTeam)
 			},
 		},
 		{
 			name: "team with name already exists",
 			setup: func(t *testing.T,
-				mockStringWriter *testutil.StringWriter,
-				mockMessageWriter *testutil.StringWriter,
+				mockSubscriber *testutil.Subscriber,
+				mockMessenger *testutil.Messenger,
 				mockDatabase *mocks.MockDatabase,
 				mockPlayer *player.Player,
 				tx *world.Tx,
 			) {
 				mockDatabase.EXPECT().LoadTeam(mockTeamName).Return(mockTeam, true)
-				mockMessageWriter.EXPECT(message.Team.CreateAlreadyExists(mockTeamName))
+				mockMessenger.EXPECT(message.Team.CreateAlreadyExists(mockTeamName))
 			},
 		},
 	} {
@@ -67,17 +67,16 @@ func TestTeamCreate(t *testing.T) {
 			testutil.MockWorld(func(tx *world.Tx) {
 				ctrl := gomock.NewController(t)
 
-				mockStringWriter := testutil.NewStringWriter(t)
-
-				mockMessageWriter := testutil.NewStringWriter(t)
-				command.Writer = mockMessageWriter
+				mockSubscriber := testutil.NewSubscriber(t)
+				mockMessenger := testutil.NewMessenger(t)
+				command.Messenger = mockMessenger
 
 				mockDatabaseAdapter := mocks.NewMockDatabase(ctrl)
-				cmd.Register(command.NewTeam(mockStringWriter, mockDatabaseAdapter))
+				cmd.Register(command.NewTeam(mockSubscriber, mockDatabaseAdapter))
 
 				mockPlayer := testutil.MockPlayer(tx, mockPlayerName)
 				if tc.setup != nil {
-					tc.setup(t, mockStringWriter, mockMessageWriter, mockDatabaseAdapter, mockPlayer, tx)
+					tc.setup(t, mockSubscriber, mockMessenger, mockDatabaseAdapter, mockPlayer, tx)
 				}
 
 				mockPlayer.ExecuteCommand("/team create " + mockTeamName)
@@ -90,8 +89,8 @@ func TestTeamInvite(t *testing.T) {
 	for _, tc := range []struct {
 		name  string
 		setup func(t *testing.T,
-			mockStringWriter *testutil.StringWriter,
-			mockMessageWriter *testutil.StringWriter,
+			mockSubscriber *testutil.Subscriber,
+			mockMessenger *testutil.Messenger,
 			mockDatabase *mocks.MockDatabase,
 			mockPlayer *player.Player,
 			tx *world.Tx,
@@ -100,15 +99,15 @@ func TestTeamInvite(t *testing.T) {
 		{
 			name: "target invited successfully",
 			setup: func(t *testing.T,
-				mockStringWriter *testutil.StringWriter,
-				mockMessageWriter *testutil.StringWriter,
+				mockSubscriber *testutil.Subscriber,
+				mockMessenger *testutil.Messenger,
 				mockDatabase *mocks.MockDatabase,
 				mockPlayer *player.Player,
 				tx *world.Tx,
 			) {
 				mockDatabase.EXPECT().LoadMemberTeam(mockPlayerName).Return(mockTeam, true)
 				mockDatabase.EXPECT().LoadMemberTeam(mockTargetPlayerName).Return(mockTeam, false)
-				mockMessageWriter.EXPECT(
+				mockMessenger.EXPECT(
 					message.Team.InviteSent(mockTargetPlayerName),
 					message.Team.InviteReceived(mockTeamName))
 			},
@@ -116,28 +115,28 @@ func TestTeamInvite(t *testing.T) {
 		{
 			name: "source not in a team",
 			setup: func(t *testing.T,
-				mockStringWriter *testutil.StringWriter,
-				mockMessageWriter *testutil.StringWriter,
+				mockSubscriber *testutil.Subscriber,
+				mockMessenger *testutil.Messenger,
 				mockDatabase *mocks.MockDatabase,
 				mockPlayer *player.Player,
 				tx *world.Tx,
 			) {
-				mockDatabase.EXPECT().LoadMemberTeam(mockPlayerName).Return(mockTeam, false)
-				mockMessageWriter.EXPECT(message.Team.NotInTeam())
+				mockDatabase.EXPECT().LoadMemberTeam(mockPlayerName).Return(team.Team{}, false)
+				mockMessenger.EXPECT(message.Team.NotInTeam())
 			},
 		},
 		{
 			name: "target is already in a team",
 			setup: func(t *testing.T,
-				mockStringWriter *testutil.StringWriter,
-				mockMessageWriter *testutil.StringWriter,
+				mockSubscriber *testutil.Subscriber,
+				mockMessenger *testutil.Messenger,
 				mockDatabase *mocks.MockDatabase,
 				mockPlayer *player.Player,
 				tx *world.Tx,
 			) {
 				mockDatabase.EXPECT().LoadMemberTeam(mockPlayerName).Return(mockTeam, true)
 				mockDatabase.EXPECT().LoadMemberTeam(mockTargetPlayerName).Return(mockTeam, true)
-				mockMessageWriter.EXPECT(message.Team.TargetAlreadyInTeam(mockTargetPlayerName))
+				mockMessenger.EXPECT(message.Team.TargetAlreadyInTeam(mockTargetPlayerName))
 			},
 		},
 	} {
@@ -145,18 +144,17 @@ func TestTeamInvite(t *testing.T) {
 			testutil.MockWorld(func(tx *world.Tx) {
 				ctrl := gomock.NewController(t)
 
-				mockStringWriter := testutil.NewStringWriter(t)
-
-				mockMessageWriter := testutil.NewStringWriter(t)
-				command.Writer = mockMessageWriter
+				mockSubscriber := testutil.NewSubscriber(t)
+				mockMessenger := testutil.NewMessenger(t)
+				command.Messenger = mockMessenger
 
 				mockDatabaseAdapter := mocks.NewMockDatabase(ctrl)
-				cmd.Register(command.NewTeam(mockStringWriter, mockDatabaseAdapter))
+				cmd.Register(command.NewTeam(mockSubscriber, mockDatabaseAdapter))
 
 				_ = testutil.MockPlayer(tx, mockTargetPlayerName)
 				mockPlayer := testutil.MockPlayer(tx, mockPlayerName)
 				if tc.setup != nil {
-					tc.setup(t, mockStringWriter, mockMessageWriter, mockDatabaseAdapter, mockPlayer, tx)
+					tc.setup(t, mockSubscriber, mockMessenger, mockDatabaseAdapter, mockPlayer, tx)
 				}
 
 				mockPlayer.ExecuteCommand("/team invite " + mockTargetPlayerName)

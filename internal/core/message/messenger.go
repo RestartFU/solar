@@ -2,8 +2,8 @@ package message
 
 import "github.com/df-mc/dragonfly/server/player"
 
-type Writer struct{}
+type Messenger struct{}
 
-func (m Writer) Write(p *player.Player, s string) {
+func (m Messenger) Message(p *player.Player, s string) {
 	p.Message(s)
 }

@@ -10,6 +10,6 @@ type Database interface {
 	LoadMemberTeam(name string) (team.Team, bool)
 	SaveTeam(team team.Team)
 }
-type MessageWriter interface {
-	Write(p *player.Player, s string)
+type Messenger interface {
+	Message(p *player.Player, s string)
 }

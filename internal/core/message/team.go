@@ -9,7 +9,7 @@ func (teamMessages) InviteSent(targetName string) string {
 }
 
 func (teamMessages) InviteReceived(teamName string) string {
-	return text.Colourf("%s invited you to their team", teamName)
+	return text.Colourf("<green><yellow>%s</yellow> invited you to their team</green>", teamName)
 }
 
 func (teamMessages) AlreadyInTeam() string {

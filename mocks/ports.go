@@ -83,38 +83,38 @@ func (mr *MockDatabaseMockRecorder) SaveTeam(team any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveTeam", reflect.TypeOf((*MockDatabase)(nil).SaveTeam), team)
 }
 
-// MockMessageWriter is a mock of MessageWriter interface.
-type MockMessageWriter struct {
+// MockMessenger is a mock of Messenger interface.
+type MockMessenger struct {
 	ctrl     *gomock.Controller
-	recorder *MockMessageWriterMockRecorder
+	recorder *MockMessengerMockRecorder
 	isgomock struct{}
 }
 
-// MockMessageWriterMockRecorder is the mock recorder for MockMessageWriter.
-type MockMessageWriterMockRecorder struct {
-	mock *MockMessageWriter
+// MockMessengerMockRecorder is the mock recorder for MockMessenger.
+type MockMessengerMockRecorder struct {
+	mock *MockMessenger
 }
 
-// NewMockMessageWriter creates a new mock instance.
-func NewMockMessageWriter(ctrl *gomock.Controller) *MockMessageWriter {
-	mock := &MockMessageWriter{ctrl: ctrl}
-	mock.recorder = &MockMessageWriterMockRecorder{mock}
+// NewMockMessenger creates a new mock instance.
+func NewMockMessenger(ctrl *gomock.Controller) *MockMessenger {
+	mock := &MockMessenger{ctrl: ctrl}
+	mock.recorder = &MockMessengerMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockMessageWriter) EXPECT() *MockMessageWriterMockRecorder {
+func (m *MockMessenger) EXPECT() *MockMessengerMockRecorder {
 	return m.recorder
 }
 
-// Write mocks base method.
-func (m *MockMessageWriter) Write(p *player.Player, s string) {
+// Message mocks base method.
+func (m *MockMessenger) Message(p *player.Player, s string) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Write", p, s)
+	m.ctrl.Call(m, "Message", p, s)
 }
 
-// Write indicates an expected call of Write.
-func (mr *MockMessageWriterMockRecorder) Write(p, s any) *gomock.Call {
+// Message indicates an expected call of Message.
+func (mr *MockMessengerMockRecorder) Message(p, s any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Write", reflect.TypeOf((*MockMessageWriter)(nil).Write), p, s)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Message", reflect.TypeOf((*MockMessenger)(nil).Message), p, s)
 }

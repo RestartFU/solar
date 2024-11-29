@@ -7,7 +7,7 @@ import (
 	"github.com/restartfu/solar/internal/ports"
 )
 
-var Writer ports.MessageWriter = message.Writer{}
+var Messenger ports.Messenger = message.Messenger{}
 
 type playerAllower struct{}
 

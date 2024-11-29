@@ -1,25 +1,27 @@
 package testutil
 
 import (
-	"github.com/df-mc/dragonfly/server/player"
+	"fmt"
+	"github.com/google/uuid"
 	"github.com/sandertv/gophertunnel/minecraft/text"
 	"testing"
 )
 
-type StringWriter struct {
+type Subscriber struct {
 	t                *testing.T
+	id               uuid.UUID
 	expectedMessages []string
 	receivedMessages []string
 }
 
-func NewStringWriter(t *testing.T) *StringWriter {
-	return &StringWriter{
-		t: t,
+func NewSubscriber(t *testing.T) *Subscriber {
+	return &Subscriber{
+		t:  t,
+		id: uuid.New(),
 	}
 }
 
-// EXPECT allows expecting multiple messages in order.
-func (w *StringWriter) EXPECT(messages ...string) {
+func (w *Subscriber) EXPECT(messages ...string) {
 	w.expectedMessages = append(w.expectedMessages, messages...)
 	w.t.Cleanup(func() {
 		if len(w.expectedMessages) != len(w.receivedMessages) {
@@ -36,15 +38,12 @@ func (w *StringWriter) EXPECT(messages ...string) {
 	})
 }
 
-// WriteString records the received message.
-func (w *StringWriter) WriteString(s string) (n int, err error) {
-	w.receivedMessages = append(w.receivedMessages, s)
-	w.t.Log(text.ANSI(s))
-	return len(s), nil
+func (w *Subscriber) UUID() uuid.UUID {
+	return w.id
 }
 
-// Write records the received message for a specific player.
-func (w *StringWriter) Write(_ *player.Player, s string) {
+func (w *Subscriber) Message(a ...any) {
+	s := fmt.Sprint(a...)
 	w.receivedMessages = append(w.receivedMessages, s)
 	w.t.Log(text.ANSI(s))
 }
