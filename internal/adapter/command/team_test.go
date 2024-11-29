@@ -213,7 +213,7 @@ func TestTeamJoin(t *testing.T) {
 				mockDatabase.EXPECT().LoadUser(mockPlayerName).Return(mockUser.WithInvitation(mockTeamName), true).Times(2)
 				mockDatabase.EXPECT().LoadMemberTeam(mockPlayerName).Return(mockTeam, false)
 				mockDatabase.EXPECT().SaveUser(mockUser)
-				mockDatabase.EXPECT().SaveTeam(mockTeam)
+				mockDatabase.EXPECT().SaveTeam(mockTeam.WithMember(mockPlayerName, domain.RoleMember))
 
 				mockMessenger.EXPECT(
 					message.Team.PlayerJoined(mockPlayerName),
