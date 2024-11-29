@@ -5,8 +5,8 @@ import (
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/dragonfly/server/world"
 	"github.com/restartfu/solar/internal/adapter/command"
+	"github.com/restartfu/solar/internal/core"
 	"github.com/restartfu/solar/internal/core/message"
-	"github.com/restartfu/solar/internal/core/team"
 	"github.com/restartfu/solar/mocks"
 	"github.com/restartfu/solar/pkg/testutil"
 	"go.uber.org/mock/gomock"
@@ -20,7 +20,7 @@ const (
 )
 
 var (
-	mockTeam = team.NewTeam(mockTeamName, mockPlayerName)
+	mockTeam = core.NewTeam(mockTeamName, mockPlayerName)
 )
 
 func TestTeamCreate(t *testing.T) {
@@ -44,7 +44,7 @@ func TestTeamCreate(t *testing.T) {
 				mockPlayer *player.Player,
 				tx *world.Tx,
 			) {
-				mockDatabase.EXPECT().LoadTeam(mockTeamName).Return(team.Team{}, false)
+				mockDatabase.EXPECT().LoadTeam(mockTeamName).Return(core.Team{}, false)
 				mockSubscriber.EXPECT(message.Team.CreateSuccess(mockTeamName, mockPlayerName))
 				mockDatabase.EXPECT().SaveTeam(mockTeam)
 			},
@@ -68,11 +68,12 @@ func TestTeamCreate(t *testing.T) {
 				ctrl := gomock.NewController(t)
 
 				mockSubscriber := testutil.NewSubscriber(t)
+				command.Subscriber = mockSubscriber
 				mockMessenger := testutil.NewMessenger(t)
 				command.Messenger = mockMessenger
 
 				mockDatabaseAdapter := mocks.NewMockDatabase(ctrl)
-				cmd.Register(command.NewTeam(mockSubscriber, mockDatabaseAdapter))
+				cmd.Register(command.NewTeam(mockDatabaseAdapter))
 
 				mockPlayer := testutil.MockPlayer(tx, mockPlayerName)
 				if tc.setup != nil {
@@ -121,7 +122,7 @@ func TestTeamInvite(t *testing.T) {
 				mockPlayer *player.Player,
 				tx *world.Tx,
 			) {
-				mockDatabase.EXPECT().LoadMemberTeam(mockPlayerName).Return(team.Team{}, false)
+				mockDatabase.EXPECT().LoadMemberTeam(mockPlayerName).Return(core.Team{}, false)
 				mockMessenger.EXPECT(message.Team.NotInTeam())
 			},
 		},
@@ -149,7 +150,7 @@ func TestTeamInvite(t *testing.T) {
 				command.Messenger = mockMessenger
 
 				mockDatabaseAdapter := mocks.NewMockDatabase(ctrl)
-				cmd.Register(command.NewTeam(mockSubscriber, mockDatabaseAdapter))
+				cmd.Register(command.NewTeam(mockDatabaseAdapter))
 
 				_ = testutil.MockPlayer(tx, mockTargetPlayerName)
 				mockPlayer := testutil.MockPlayer(tx, mockPlayerName)

@@ -19,7 +19,7 @@ func main() {
 		cmd.New("debug", "", nil,
 			command.DebugActiveClass{},
 		),
-		command.NewTeam(chat.StdoutSubscriber{}, mongodb.DatabaseAdapter{}),
+		command.NewTeam(mongodb.DatabaseAdapter{}),
 	} {
 		cmd.Register(c)
 	}

@@ -5,24 +5,23 @@ import (
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/dragonfly/server/player/chat"
 	"github.com/df-mc/dragonfly/server/world"
+	"github.com/restartfu/solar/internal/core"
 	"github.com/restartfu/solar/internal/core/message"
-	"github.com/restartfu/solar/internal/core/team"
 	"github.com/restartfu/solar/internal/ports"
 )
 
 type TeamCreate struct {
 	playerAllower
-	db         ports.Database
-	subscriber chat.Subscriber
+	db ports.Database
 
 	Sub  cmd.SubCommand `cmd:"create"`
 	Name string
 }
 
-func NewTeam(sub chat.Subscriber, db ports.Database) cmd.Command {
+func NewTeam(db ports.Database) cmd.Command {
 	return cmd.New("team", "", nil,
-		TeamCreate{subscriber: sub, db: db},
-		TeamInvite{subscriber: sub, db: db},
+		TeamCreate{db: db},
+		TeamInvite{db: db},
 	)
 }
 
@@ -35,8 +34,8 @@ func (t TeamCreate) Run(src cmd.Source, out *cmd.Output, _ *world.Tx) {
 		return
 	}
 
-	tm := team.NewTeam(t.Name, p.Name())
-	t.subscriber.Message(message.Team.CreateSuccess(t.Name, p.Name()))
+	tm := core.NewTeam(t.Name, p.Name())
+	Subscriber.Message(message.Team.CreateSuccess(t.Name, p.Name()))
 
 	t.db.SaveTeam(tm)
 }
