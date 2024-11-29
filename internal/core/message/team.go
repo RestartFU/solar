@@ -4,6 +4,14 @@ import "github.com/sandertv/gophertunnel/minecraft/text"
 
 type teamMessages struct{}
 
+func (teamMessages) PlayerLeft(name string) string {
+	return text.Colourf("<red>%s left the team</red>", name)
+}
+
+func (teamMessages) PlayerJoined(name string) string {
+	return text.Colourf("<yellow>%s</yellow> <blue>joined the team</blue>", name)
+}
+
 func (teamMessages) InviteSent(targetName string) string {
 	return text.Colourf("<green>Invite sent to <yellow>%s</yellow></green>", targetName)
 }

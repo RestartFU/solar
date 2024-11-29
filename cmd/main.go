@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/restartfu/solar/internal/adapter/mongodb"
 	"log/slog"
 	"os"
 
@@ -19,7 +18,7 @@ func main() {
 		cmd.New("debug", "", nil,
 			command.DebugActiveClass{},
 		),
-		command.NewTeam(mongodb.DatabaseAdapter{}),
+		command.NewTeam(),
 	} {
 		cmd.Register(c)
 	}

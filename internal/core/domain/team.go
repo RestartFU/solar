@@ -1,6 +1,9 @@
-package core
+package domain
 
-import "strings"
+import (
+	"maps"
+	"strings"
+)
 
 const (
 	RoleMember Role = iota
@@ -40,10 +43,12 @@ func NewTeam(name string, leader string) Team {
 }
 
 func (t Team) WithMember(name string, role Role) Team {
+	t.Members = maps.Clone(t.Members)
 	t.Members[name] = role
 	return t
 }
 func (t Team) WithoutMember(name string) Team {
+	t.Members = maps.Clone(t.Members)
 	delete(t.Members, name)
 	return t
 }

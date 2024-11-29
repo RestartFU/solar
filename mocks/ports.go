@@ -10,7 +10,7 @@
 package mocks
 
 import (
-	team "github.com/restartfu/solar/internal/core"
+	"github.com/restartfu/solar/internal/core/domain"
 	reflect "reflect"
 
 	player "github.com/df-mc/dragonfly/server/player"
@@ -42,10 +42,10 @@ func (m *MockDatabase) EXPECT() *MockDatabaseMockRecorder {
 }
 
 // LoadMemberTeam mocks base method.
-func (m *MockDatabase) LoadMemberTeam(name string) (team.Team, bool) {
+func (m *MockDatabase) LoadMemberTeam(name string) (domain.Team, bool) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "LoadMemberTeam", name)
-	ret0, _ := ret[0].(team.Team)
+	ret0, _ := ret[0].(domain.Team)
 	ret1, _ := ret[1].(bool)
 	return ret0, ret1
 }
@@ -57,10 +57,10 @@ func (mr *MockDatabaseMockRecorder) LoadMemberTeam(name any) *gomock.Call {
 }
 
 // LoadTeam mocks base method.
-func (m *MockDatabase) LoadTeam(name string) (team.Team, bool) {
+func (m *MockDatabase) LoadTeam(name string) (domain.Team, bool) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "LoadTeam", name)
-	ret0, _ := ret[0].(team.Team)
+	ret0, _ := ret[0].(domain.Team)
 	ret1, _ := ret[1].(bool)
 	return ret0, ret1
 }
@@ -71,8 +71,23 @@ func (mr *MockDatabaseMockRecorder) LoadTeam(name any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadTeam", reflect.TypeOf((*MockDatabase)(nil).LoadTeam), name)
 }
 
+// LoadUser mocks base method.
+func (m *MockDatabase) LoadUser(name string) (domain.User, bool) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "LoadUser", name)
+	ret0, _ := ret[0].(domain.User)
+	ret1, _ := ret[1].(bool)
+	return ret0, ret1
+}
+
+// LoadUser indicates an expected call of LoadUser.
+func (mr *MockDatabaseMockRecorder) LoadUser(name any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadUser", reflect.TypeOf((*MockDatabase)(nil).LoadUser), name)
+}
+
 // SaveTeam mocks base method.
-func (m *MockDatabase) SaveTeam(team team.Team) {
+func (m *MockDatabase) SaveTeam(team domain.Team) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "SaveTeam", team)
 }
@@ -81,6 +96,18 @@ func (m *MockDatabase) SaveTeam(team team.Team) {
 func (mr *MockDatabaseMockRecorder) SaveTeam(team any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveTeam", reflect.TypeOf((*MockDatabase)(nil).SaveTeam), team)
+}
+
+// SaveUser mocks base method.
+func (m *MockDatabase) SaveUser(user domain.User) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SaveUser", user)
+}
+
+// SaveUser indicates an expected call of SaveUser.
+func (mr *MockDatabaseMockRecorder) SaveUser(user any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveUser", reflect.TypeOf((*MockDatabase)(nil).SaveUser), user)
 }
 
 // MockMessenger is a mock of Messenger interface.
