@@ -7,6 +7,7 @@ import (
 
 type Database interface {
 	LoadTeam(name string) (team.Team, bool)
+	LoadMemberTeam(name string) (team.Team, bool)
 	SaveTeam(team team.Team)
 }
 type MessageWriter interface {

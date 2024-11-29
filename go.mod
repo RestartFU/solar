@@ -3,7 +3,7 @@ module github.com/restartfu/solar
 go 1.23.2
 
 require (
-	github.com/df-mc/dragonfly v0.9.20-0.20241124175346-cf9ce4ee3ecc
+	github.com/df-mc/dragonfly v0.9.20-0.20241129003219-faf3cb47ebd3
 	github.com/restartfu/gophig v0.0.1
 	github.com/sandertv/gophertunnel v1.42.2
 	go.uber.org/mock v0.5.0
@@ -23,6 +23,7 @@ require (
 	github.com/klauspost/compress v1.17.11 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/muhammadmuzzammil1998/jsonc v1.0.0 // indirect
+	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.7 // indirect
 	github.com/sandertv/go-raknet v1.14.2 // indirect
 	github.com/segmentio/fasthash v1.0.3 // indirect

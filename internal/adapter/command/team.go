@@ -23,6 +23,7 @@ type TeamCreate struct {
 func NewTeam(w io.StringWriter, db ports.Database) cmd.Command {
 	return cmd.New("team", "", nil,
 		TeamCreate{globalWriter: w, db: db},
+		TeamInvite{globalWriter: w, db: db},
 	)
 }
 
@@ -39,4 +40,32 @@ func (t TeamCreate) Run(src cmd.Source, out *cmd.Output, _ *world.Tx) {
 	_, _ = t.globalWriter.WriteString(message.Team.CreateSuccess(t.Name, p.Name()))
 
 	t.db.SaveTeam(tm)
+}
+
+type TeamInvite struct {
+	playerAllower
+	db           ports.Database
+	globalWriter io.StringWriter
+
+	Sub    cmd.SubCommand `cmd:"invite"`
+	Target []cmd.Target
+}
+
+func (t TeamInvite) Run(src cmd.Source, out *cmd.Output, _ *world.Tx) {
+	p := src.(*player.Player)
+	target := t.Target[0].(*player.Player)
+
+	tm, ok := t.db.LoadMemberTeam(p.Name())
+	if !ok {
+		Writer.Write(p, message.Team.NotInTeam())
+		return
+	}
+
+	if _, ok = t.db.LoadMemberTeam(target.Name()); ok {
+		Writer.Write(p, message.Team.TargetAlreadyInTeam(target.Name()))
+		return
+	}
+
+	Writer.Write(target, message.Team.InviteSent(target.Name()))
+	Writer.Write(target, message.Team.InviteReceived(tm.DisplayName))
 }

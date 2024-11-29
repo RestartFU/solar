@@ -4,6 +4,26 @@ import "github.com/sandertv/gophertunnel/minecraft/text"
 
 type teamMessages struct{}
 
+func (teamMessages) InviteSent(targetName string) string {
+	return text.Colourf("<green>Invite sent to <yellow>%s</yellow></green>", targetName)
+}
+
+func (teamMessages) InviteReceived(teamName string) string {
+	return text.Colourf("%s invited you to their team", teamName)
+}
+
+func (teamMessages) AlreadyInTeam() string {
+	return text.Colourf("<red>You are already in a team</red>")
+}
+
+func (teamMessages) NotInTeam() string {
+	return text.Colourf("<red>You are not in a team</red>")
+}
+
+func (teamMessages) TargetAlreadyInTeam(name string) string {
+	return text.Colourf("<red>%s is already in a team</red>", name)
+}
+
 func (teamMessages) CreateSuccess(name string, leader string) string {
 	return text.Colourf("<yellow>Team <blue>%s</blue> has been <green>created</green> by <grey>%s</grey></yellow>", name, leader)
 }

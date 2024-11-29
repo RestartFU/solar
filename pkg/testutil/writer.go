@@ -7,8 +7,9 @@ import (
 )
 
 type StringWriter struct {
-	t               *testing.T
-	receivedMessage string
+	t                *testing.T
+	expectedMessages []string
+	receivedMessages []string
 }
 
 func NewStringWriter(t *testing.T) *StringWriter {
@@ -17,25 +18,33 @@ func NewStringWriter(t *testing.T) *StringWriter {
 	}
 }
 
-func (w *StringWriter) EXPECT(message string) {
+// EXPECT allows expecting multiple messages in order.
+func (w *StringWriter) EXPECT(messages ...string) {
+	w.expectedMessages = append(w.expectedMessages, messages...)
 	w.t.Cleanup(func() {
-		if w.receivedMessage == "" {
-			w.t.Errorf("expected message '%s' but got none", text.ANSI(message))
+		if len(w.expectedMessages) != len(w.receivedMessages) {
+			w.t.Errorf("expected %d messages, but got %d", len(w.expectedMessages), len(w.receivedMessages))
 			return
 		}
-		if w.receivedMessage != message {
-			w.t.Errorf("expected message '%s' but got '%s'", text.ANSI(message), text.ANSI(w.receivedMessage))
+
+		for i, expected := range w.expectedMessages {
+			received := w.receivedMessages[i]
+			if received != expected {
+				w.t.Errorf("expected message '%s' at index %d, but got '%s'", text.ANSI(expected), i, text.ANSI(received))
+			}
 		}
 	})
 }
 
+// WriteString records the received message.
 func (w *StringWriter) WriteString(s string) (n int, err error) {
-	w.receivedMessage = s
+	w.receivedMessages = append(w.receivedMessages, s)
 	w.t.Log(text.ANSI(s))
-	return len(w.receivedMessage), nil
+	return len(s), nil
 }
 
-func (w *StringWriter) Write(p *player.Player, s string) {
-	w.receivedMessage = s
+// Write records the received message for a specific player.
+func (w *StringWriter) Write(_ *player.Player, s string) {
+	w.receivedMessages = append(w.receivedMessages, s)
 	w.t.Log(text.ANSI(s))
 }

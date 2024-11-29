@@ -41,6 +41,21 @@ func (m *MockDatabase) EXPECT() *MockDatabaseMockRecorder {
 	return m.recorder
 }
 
+// LoadMemberTeam mocks base method.
+func (m *MockDatabase) LoadMemberTeam(name string) (team.Team, bool) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "LoadMemberTeam", name)
+	ret0, _ := ret[0].(team.Team)
+	ret1, _ := ret[1].(bool)
+	return ret0, ret1
+}
+
+// LoadMemberTeam indicates an expected call of LoadMemberTeam.
+func (mr *MockDatabaseMockRecorder) LoadMemberTeam(name any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadMemberTeam", reflect.TypeOf((*MockDatabase)(nil).LoadMemberTeam), name)
+}
+
 // LoadTeam mocks base method.
 func (m *MockDatabase) LoadTeam(name string) (team.Team, bool) {
 	m.ctrl.T.Helper()
