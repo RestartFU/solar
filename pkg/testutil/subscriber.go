@@ -21,29 +21,29 @@ func NewSubscriber(t *testing.T) *Subscriber {
 	}
 }
 
-func (w *Subscriber) EXPECT(messages ...string) {
-	w.expectedMessages = append(w.expectedMessages, messages...)
-	w.t.Cleanup(func() {
-		if len(w.expectedMessages) != len(w.receivedMessages) {
-			w.t.Errorf("expected %d messages, but got %d", len(w.expectedMessages), len(w.receivedMessages))
+func (s *Subscriber) EXPECT(messages ...string) {
+	s.expectedMessages = append(s.expectedMessages, messages...)
+	s.t.Cleanup(func() {
+		if len(s.expectedMessages) != len(s.receivedMessages) {
+			s.t.Errorf("expected %d messages, but got %d", len(s.expectedMessages), len(s.receivedMessages))
 			return
 		}
 
-		for i, expected := range w.expectedMessages {
-			received := w.receivedMessages[i]
+		for i, expected := range s.expectedMessages {
+			received := s.receivedMessages[i]
 			if received != expected {
-				w.t.Errorf("expected message '%s' at index %d, but got '%s'", text.ANSI(expected), i, text.ANSI(received))
+				s.t.Errorf("expected message '%s' at index %d, but got '%s'", text.ANSI(expected), i, text.ANSI(received))
 			}
 		}
 	})
 }
 
-func (w *Subscriber) UUID() uuid.UUID {
-	return w.id
+func (s *Subscriber) UUID() uuid.UUID {
+	return s.id
 }
 
-func (w *Subscriber) Message(a ...any) {
-	s := fmt.Sprint(a...)
-	w.receivedMessages = append(w.receivedMessages, s)
-	w.t.Log(text.ANSI(s))
+func (s *Subscriber) Message(a ...any) {
+	str := fmt.Sprint(a...)
+	s.receivedMessages = append(s.receivedMessages, str)
+	s.t.Log(text.ANSI(s))
 }

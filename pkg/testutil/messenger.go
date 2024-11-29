@@ -18,24 +18,24 @@ func NewMessenger(t *testing.T) *Messenger {
 	}
 }
 
-func (w *Messenger) EXPECT(messages ...string) {
-	w.expectedMessages = append(w.expectedMessages, messages...)
-	w.t.Cleanup(func() {
-		if len(w.expectedMessages) != len(w.receivedMessages) {
-			w.t.Errorf("expected %d messages, but got %d", len(w.expectedMessages), len(w.receivedMessages))
+func (m *Messenger) EXPECT(messages ...string) {
+	m.expectedMessages = append(m.expectedMessages, messages...)
+	m.t.Cleanup(func() {
+		if len(m.expectedMessages) != len(m.receivedMessages) {
+			m.t.Errorf("expected %d messages, but got %d", len(m.expectedMessages), len(m.receivedMessages))
 			return
 		}
 
-		for i, expected := range w.expectedMessages {
-			received := w.receivedMessages[i]
+		for i, expected := range m.expectedMessages {
+			received := m.receivedMessages[i]
 			if received != expected {
-				w.t.Errorf("expected message '%s' at index %d, but got '%s'", text.ANSI(expected), i, text.ANSI(received))
+				m.t.Errorf("expected message '%s' at index %d, but got '%s'", text.ANSI(expected), i, text.ANSI(received))
 			}
 		}
 	})
 }
 
-func (w *Messenger) Message(_ *player.Player, s string) {
-	w.receivedMessages = append(w.receivedMessages, s)
-	w.t.Log(text.ANSI(s))
+func (m *Messenger) Message(_ *player.Player, s string) {
+	m.receivedMessages = append(m.receivedMessages, s)
+	m.t.Log(text.ANSI(s))
 }
