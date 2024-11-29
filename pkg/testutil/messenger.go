@@ -8,7 +8,6 @@ import (
 
 type Messenger struct {
 	t                *testing.T
-	expectedMessages []string
 	receivedMessages []string
 }
 
@@ -18,15 +17,14 @@ func NewMessenger(t *testing.T) *Messenger {
 	}
 }
 
-func (m *Messenger) EXPECT(messages ...string) {
-	m.expectedMessages = append(m.expectedMessages, messages...)
+func (m *Messenger) EXPECT(expectedMessages ...string) {
 	m.t.Cleanup(func() {
-		if len(m.expectedMessages) != len(m.receivedMessages) {
-			m.t.Errorf("expected %d messages, but got %d", len(m.expectedMessages), len(m.receivedMessages))
+		if len(expectedMessages) != len(m.receivedMessages) {
+			m.t.Errorf("expected %d messages, but got %d", len(expectedMessages), len(m.receivedMessages))
 			return
 		}
 
-		for i, expected := range m.expectedMessages {
+		for i, expected := range expectedMessages {
 			received := m.receivedMessages[i]
 			if received != expected {
 				m.t.Errorf("expected message '%s' at index %d, but got '%s'", text.ANSI(expected), i, text.ANSI(received))

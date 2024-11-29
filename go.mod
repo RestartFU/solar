@@ -4,6 +4,7 @@ go 1.23.2
 
 require (
 	github.com/df-mc/dragonfly v0.9.20-0.20241129003219-faf3cb47ebd3
+	github.com/google/uuid v1.6.0
 	github.com/restartfu/gophig v0.0.1
 	github.com/sandertv/gophertunnel v1.42.2
 	go.uber.org/mock v0.5.0
@@ -19,7 +20,6 @@ require (
 	github.com/go-jose/go-jose/v3 v3.0.3 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
-	github.com/google/uuid v1.6.0 // indirect
 	github.com/klauspost/compress v1.17.11 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/muhammadmuzzammil1998/jsonc v1.0.0 // indirect

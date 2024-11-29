@@ -10,7 +10,6 @@ import (
 type Subscriber struct {
 	t                *testing.T
 	id               uuid.UUID
-	expectedMessages []string
 	receivedMessages []string
 }
 
@@ -21,15 +20,14 @@ func NewSubscriber(t *testing.T) *Subscriber {
 	}
 }
 
-func (s *Subscriber) EXPECT(messages ...string) {
-	s.expectedMessages = append(s.expectedMessages, messages...)
+func (s *Subscriber) EXPECT(expectedMessages ...string) {
 	s.t.Cleanup(func() {
-		if len(s.expectedMessages) != len(s.receivedMessages) {
-			s.t.Errorf("expected %d messages, but got %d", len(s.expectedMessages), len(s.receivedMessages))
+		if len(expectedMessages) != len(s.receivedMessages) {
+			s.t.Errorf("expected %d messages, but got %d", len(expectedMessages), len(s.receivedMessages))
 			return
 		}
 
-		for i, expected := range s.expectedMessages {
+		for i, expected := range expectedMessages {
 			received := s.receivedMessages[i]
 			if received != expected {
 				s.t.Errorf("expected message '%s' at index %d, but got '%s'", text.ANSI(expected), i, text.ANSI(received))

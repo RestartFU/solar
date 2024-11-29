@@ -2,7 +2,6 @@ package command_test
 
 import (
 	"github.com/df-mc/dragonfly/server/cmd"
-	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/dragonfly/server/world"
 	"github.com/restartfu/solar/internal/adapter/command"
 	"github.com/restartfu/solar/internal/core"
@@ -33,8 +32,6 @@ func TestTeamCreate(t *testing.T) {
 			mockSubscriber *testutil.Subscriber,
 			mockMessenger *testutil.Messenger,
 			mockDatabase *mocks.MockDatabase,
-			mockPlayer *player.Player,
-			tx *world.Tx,
 		)
 	}{
 		{
@@ -43,8 +40,6 @@ func TestTeamCreate(t *testing.T) {
 				mockSubscriber *testutil.Subscriber,
 				mockMessenger *testutil.Messenger,
 				mockDatabase *mocks.MockDatabase,
-				mockPlayer *player.Player,
-				tx *world.Tx,
 			) {
 				mockDatabase.EXPECT().LoadTeam(mockTeamName).Return(domain.Team{}, false)
 				mockSubscriber.EXPECT(message.Team.CreateSuccess(mockTeamName, mockPlayerName))
@@ -57,8 +52,6 @@ func TestTeamCreate(t *testing.T) {
 				mockSubscriber *testutil.Subscriber,
 				mockMessenger *testutil.Messenger,
 				mockDatabase *mocks.MockDatabase,
-				mockPlayer *player.Player,
-				tx *world.Tx,
 			) {
 				mockDatabase.EXPECT().LoadTeam(mockTeamName).Return(mockTeam, true)
 				mockMessenger.EXPECT(message.Team.CreateAlreadyExists(mockTeamName))
@@ -80,7 +73,7 @@ func TestTeamCreate(t *testing.T) {
 
 				mockPlayer := testutil.MockPlayer(tx, mockPlayerName)
 				if tc.setup != nil {
-					tc.setup(t, mockSubscriber, mockMessenger, mockDatabaseAdapter, mockPlayer, tx)
+					tc.setup(t, mockSubscriber, mockMessenger, mockDatabaseAdapter)
 				}
 
 				mockPlayer.ExecuteCommand("/team create " + mockTeamName)
@@ -96,8 +89,6 @@ func TestTeamInvite(t *testing.T) {
 			mockSubscriber *testutil.Subscriber,
 			mockMessenger *testutil.Messenger,
 			mockDatabase *mocks.MockDatabase,
-			mockPlayer *player.Player,
-			tx *world.Tx,
 		)
 	}{
 		{
@@ -106,8 +97,6 @@ func TestTeamInvite(t *testing.T) {
 				mockSubscriber *testutil.Subscriber,
 				mockMessenger *testutil.Messenger,
 				mockDatabase *mocks.MockDatabase,
-				mockPlayer *player.Player,
-				tx *world.Tx,
 			) {
 				mockDatabase.EXPECT().LoadMemberTeam(mockPlayerName).Return(mockTeam, true)
 				mockDatabase.EXPECT().LoadMemberTeam(mockTargetPlayerName).Return(mockTeam, false)
@@ -126,8 +115,6 @@ func TestTeamInvite(t *testing.T) {
 				mockSubscriber *testutil.Subscriber,
 				mockMessenger *testutil.Messenger,
 				mockDatabase *mocks.MockDatabase,
-				mockPlayer *player.Player,
-				tx *world.Tx,
 			) {
 				mockDatabase.EXPECT().LoadMemberTeam(mockPlayerName).Return(mockTeam, true)
 				mockDatabase.EXPECT().LoadMemberTeam(mockTargetPlayerName).Return(mockTeam, false)
@@ -141,8 +128,6 @@ func TestTeamInvite(t *testing.T) {
 				mockSubscriber *testutil.Subscriber,
 				mockMessenger *testutil.Messenger,
 				mockDatabase *mocks.MockDatabase,
-				mockPlayer *player.Player,
-				tx *world.Tx,
 			) {
 				mockDatabase.EXPECT().LoadMemberTeam(mockPlayerName).Return(domain.Team{}, false)
 				mockMessenger.EXPECT(message.Team.NotInTeam())
@@ -154,8 +139,6 @@ func TestTeamInvite(t *testing.T) {
 				mockSubscriber *testutil.Subscriber,
 				mockMessenger *testutil.Messenger,
 				mockDatabase *mocks.MockDatabase,
-				mockPlayer *player.Player,
-				tx *world.Tx,
 			) {
 				mockDatabase.EXPECT().LoadMemberTeam(mockPlayerName).Return(mockTeam, true)
 				mockDatabase.EXPECT().LoadMemberTeam(mockTargetPlayerName).Return(mockTeam, true)
@@ -178,7 +161,7 @@ func TestTeamInvite(t *testing.T) {
 				_ = testutil.MockPlayer(tx, mockTargetPlayerName)
 				mockPlayer := testutil.MockPlayer(tx, mockPlayerName)
 				if tc.setup != nil {
-					tc.setup(t, mockSubscriber, mockMessenger, mockDatabaseAdapter, mockPlayer, tx)
+					tc.setup(t, mockSubscriber, mockMessenger, mockDatabaseAdapter)
 				}
 
 				mockPlayer.ExecuteCommand("/team invite " + mockTargetPlayerName)
@@ -197,8 +180,6 @@ func TestTeamJoin(t *testing.T) {
 			mockSubscriber *testutil.Subscriber,
 			mockMessenger *testutil.Messenger,
 			mockDatabase *mocks.MockDatabase,
-			mockPlayer *player.Player,
-			tx *world.Tx,
 		)
 	}{
 		{
@@ -207,8 +188,6 @@ func TestTeamJoin(t *testing.T) {
 				mockSubscriber *testutil.Subscriber,
 				mockMessenger *testutil.Messenger,
 				mockDatabase *mocks.MockDatabase,
-				mockPlayer *player.Player,
-				tx *world.Tx,
 			) {
 				mockDatabase.EXPECT().LoadUser(mockPlayerName).Return(mockUser.WithInvitation(mockTeamName), true).Times(2)
 				mockDatabase.EXPECT().LoadMemberTeam(mockPlayerName).Return(mockTeam, false)
@@ -227,8 +206,6 @@ func TestTeamJoin(t *testing.T) {
 				mockSubscriber *testutil.Subscriber,
 				mockMessenger *testutil.Messenger,
 				mockDatabase *mocks.MockDatabase,
-				mockPlayer *player.Player,
-				tx *world.Tx,
 			) {
 				mockDatabase.EXPECT().LoadUser(mockPlayerName).Return(mockUser.WithInvitation(mockTeamName), true)
 				mockDatabase.EXPECT().LoadMemberTeam(mockPlayerName).Return(mockTeam, true)
@@ -243,8 +220,6 @@ func TestTeamJoin(t *testing.T) {
 				mockSubscriber *testutil.Subscriber,
 				mockMessenger *testutil.Messenger,
 				mockDatabase *mocks.MockDatabase,
-				mockPlayer *player.Player,
-				tx *world.Tx,
 			) {
 				mockDatabase.EXPECT().LoadUser(mockPlayerName).Return(mockUser.WithInvitation(mockTeamName), true)
 				mockDatabase.EXPECT().LoadMemberTeam(mockPlayerName).Return(domain.Team{}, false)
@@ -270,7 +245,7 @@ func TestTeamJoin(t *testing.T) {
 				_ = testutil.MockPlayer(tx, mockTargetPlayerName)
 				mockPlayer := testutil.MockPlayer(tx, mockPlayerName)
 				if tc.setup != nil {
-					tc.setup(t, mockSubscriber, mockMessenger, mockDatabaseAdapter, mockPlayer, tx)
+					tc.setup(t, mockSubscriber, mockMessenger, mockDatabaseAdapter)
 				}
 
 				mockPlayer.ExecuteCommand("/team join " + mockTeamName)
@@ -290,8 +265,6 @@ func TestTeamLeave(t *testing.T) {
 			mockSubscriber *testutil.Subscriber,
 			mockMessenger *testutil.Messenger,
 			mockDatabase *mocks.MockDatabase,
-			mockPlayer *player.Player,
-			tx *world.Tx,
 		)
 	}{
 		{
@@ -300,8 +273,6 @@ func TestTeamLeave(t *testing.T) {
 				mockSubscriber *testutil.Subscriber,
 				mockMessenger *testutil.Messenger,
 				mockDatabase *mocks.MockDatabase,
-				mockPlayer *player.Player,
-				tx *world.Tx,
 			) {
 				mockDatabase.EXPECT().LoadMemberTeam(mockPlayerName).Return(mockTeam, true)
 				mockDatabase.EXPECT().SaveTeam(mockTeam.WithoutMember(mockPlayerName))
@@ -318,8 +289,6 @@ func TestTeamLeave(t *testing.T) {
 				mockSubscriber *testutil.Subscriber,
 				mockMessenger *testutil.Messenger,
 				mockDatabase *mocks.MockDatabase,
-				mockPlayer *player.Player,
-				tx *world.Tx,
 			) {
 				mockDatabase.EXPECT().LoadMemberTeam(mockPlayerName).Return(domain.Team{}, false)
 				mockMessenger.EXPECT(
@@ -343,7 +312,7 @@ func TestTeamLeave(t *testing.T) {
 				_ = testutil.MockPlayer(tx, mockTargetPlayerName)
 				mockPlayer := testutil.MockPlayer(tx, mockPlayerName)
 				if tc.setup != nil {
-					tc.setup(t, mockSubscriber, mockMessenger, mockDatabaseAdapter, mockPlayer, tx)
+					tc.setup(t, mockSubscriber, mockMessenger, mockDatabaseAdapter)
 				}
 
 				mockPlayer.ExecuteCommand("/team leave")

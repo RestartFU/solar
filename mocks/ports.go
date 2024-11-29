@@ -10,10 +10,10 @@
 package mocks
 
 import (
-	"github.com/restartfu/solar/internal/core/domain"
 	reflect "reflect"
 
 	player "github.com/df-mc/dragonfly/server/player"
+	domain "github.com/restartfu/solar/internal/core/domain"
 	gomock "go.uber.org/mock/gomock"
 )
 
