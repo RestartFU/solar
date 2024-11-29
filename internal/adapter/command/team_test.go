@@ -25,7 +25,6 @@ var (
 )
 
 func TestTeamCreate(t *testing.T) {
-
 	for _, tc := range []struct {
 		name  string
 		setup func(t *testing.T,
