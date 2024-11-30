@@ -7,6 +7,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/restartfu/gophig v0.0.1
 	github.com/sandertv/gophertunnel v1.42.2
+	github.com/stretchr/testify v1.10.0
 	go.uber.org/mock v0.5.0
 	golang.org/x/text v0.19.0
 )
@@ -14,6 +15,7 @@ require (
 require (
 	github.com/brentp/intintmap v0.0.0-20190211203843-30dc0ade9af9 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/df-mc/goleveldb v1.1.9 // indirect
 	github.com/df-mc/worldupgrader v1.0.18 // indirect
 	github.com/go-gl/mathgl v1.1.0 // indirect
@@ -24,9 +26,9 @@ require (
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/muhammadmuzzammil1998/jsonc v1.0.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.7 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/sandertv/go-raknet v1.14.2 // indirect
 	github.com/segmentio/fasthash v1.0.3 // indirect
-	github.com/stretchr/testify v1.10.0 // indirect
 	golang.org/x/crypto v0.28.0 // indirect
 	golang.org/x/exp v0.0.0-20241009180824-f66d83c29e7c // indirect
 	golang.org/x/image v0.21.0 // indirect

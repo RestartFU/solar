@@ -13,101 +13,101 @@ import (
 	reflect "reflect"
 
 	player "github.com/df-mc/dragonfly/server/player"
-	domain "github.com/restartfu/solar/internal/core/domain"
+	ports "github.com/restartfu/solar/internal/ports"
 	gomock "go.uber.org/mock/gomock"
 )
 
-// MockDatabase is a mock of Database interface.
-type MockDatabase struct {
+// MockIdentifiable is a mock of Identifiable interface.
+type MockIdentifiable struct {
 	ctrl     *gomock.Controller
-	recorder *MockDatabaseMockRecorder
+	recorder *MockIdentifiableMockRecorder
 	isgomock struct{}
 }
 
-// MockDatabaseMockRecorder is the mock recorder for MockDatabase.
-type MockDatabaseMockRecorder struct {
-	mock *MockDatabase
+// MockIdentifiableMockRecorder is the mock recorder for MockIdentifiable.
+type MockIdentifiableMockRecorder struct {
+	mock *MockIdentifiable
 }
 
-// NewMockDatabase creates a new mock instance.
-func NewMockDatabase(ctrl *gomock.Controller) *MockDatabase {
-	mock := &MockDatabase{ctrl: ctrl}
-	mock.recorder = &MockDatabaseMockRecorder{mock}
+// NewMockIdentifiable creates a new mock instance.
+func NewMockIdentifiable(ctrl *gomock.Controller) *MockIdentifiable {
+	mock := &MockIdentifiable{ctrl: ctrl}
+	mock.recorder = &MockIdentifiableMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockDatabase) EXPECT() *MockDatabaseMockRecorder {
+func (m *MockIdentifiable) EXPECT() *MockIdentifiableMockRecorder {
 	return m.recorder
 }
 
-// LoadMemberTeam mocks base method.
-func (m *MockDatabase) LoadMemberTeam(name string) (domain.Team, bool) {
+// DisplayName mocks base method.
+func (m *MockIdentifiable) DisplayName() string {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "LoadMemberTeam", name)
-	ret0, _ := ret[0].(domain.Team)
+	ret := m.ctrl.Call(m, "DisplayName")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// DisplayName indicates an expected call of DisplayName.
+func (mr *MockIdentifiableMockRecorder) DisplayName() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisplayName", reflect.TypeOf((*MockIdentifiable)(nil).DisplayName))
+}
+
+// MockRepository is a mock of Repository interface.
+type MockRepository[T ports.Identifiable] struct {
+	ctrl     *gomock.Controller
+	recorder *MockRepositoryMockRecorder[T]
+	isgomock struct{}
+}
+
+// MockRepositoryMockRecorder is the mock recorder for MockRepository.
+type MockRepositoryMockRecorder[T ports.Identifiable] struct {
+	mock *MockRepository[T]
+}
+
+// NewMockRepository creates a new mock instance.
+func NewMockRepository[T ports.Identifiable](ctrl *gomock.Controller) *MockRepository[T] {
+	mock := &MockRepository[T]{ctrl: ctrl}
+	mock.recorder = &MockRepositoryMockRecorder[T]{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockRepository[T]) EXPECT() *MockRepositoryMockRecorder[T] {
+	return m.recorder
+}
+
+// Find mocks base method.
+func (m *MockRepository[T]) Find(conds ...ports.Condition[T]) (T, bool) {
+	m.ctrl.T.Helper()
+	varargs := []any{}
+	for _, a := range conds {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "Find", varargs...)
+	ret0, _ := ret[0].(T)
 	ret1, _ := ret[1].(bool)
 	return ret0, ret1
 }
 
-// LoadMemberTeam indicates an expected call of LoadMemberTeam.
-func (mr *MockDatabaseMockRecorder) LoadMemberTeam(name any) *gomock.Call {
+// Find indicates an expected call of Find.
+func (mr *MockRepositoryMockRecorder[T]) Find(conds ...any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadMemberTeam", reflect.TypeOf((*MockDatabase)(nil).LoadMemberTeam), name)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockRepository[T])(nil).Find), conds...)
 }
 
-// LoadTeam mocks base method.
-func (m *MockDatabase) LoadTeam(name string) (domain.Team, bool) {
+// Save mocks base method.
+func (m *MockRepository[T]) Save(v T) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "LoadTeam", name)
-	ret0, _ := ret[0].(domain.Team)
-	ret1, _ := ret[1].(bool)
-	return ret0, ret1
+	m.ctrl.Call(m, "Save", v)
 }
 
-// LoadTeam indicates an expected call of LoadTeam.
-func (mr *MockDatabaseMockRecorder) LoadTeam(name any) *gomock.Call {
+// Save indicates an expected call of Save.
+func (mr *MockRepositoryMockRecorder[T]) Save(v any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadTeam", reflect.TypeOf((*MockDatabase)(nil).LoadTeam), name)
-}
-
-// LoadUser mocks base method.
-func (m *MockDatabase) LoadUser(name string) (domain.User, bool) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "LoadUser", name)
-	ret0, _ := ret[0].(domain.User)
-	ret1, _ := ret[1].(bool)
-	return ret0, ret1
-}
-
-// LoadUser indicates an expected call of LoadUser.
-func (mr *MockDatabaseMockRecorder) LoadUser(name any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadUser", reflect.TypeOf((*MockDatabase)(nil).LoadUser), name)
-}
-
-// SaveTeam mocks base method.
-func (m *MockDatabase) SaveTeam(team domain.Team) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "SaveTeam", team)
-}
-
-// SaveTeam indicates an expected call of SaveTeam.
-func (mr *MockDatabaseMockRecorder) SaveTeam(team any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveTeam", reflect.TypeOf((*MockDatabase)(nil).SaveTeam), team)
-}
-
-// SaveUser mocks base method.
-func (m *MockDatabase) SaveUser(user domain.User) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "SaveUser", user)
-}
-
-// SaveUser indicates an expected call of SaveUser.
-func (mr *MockDatabaseMockRecorder) SaveUser(user any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SaveUser", reflect.TypeOf((*MockDatabase)(nil).SaveUser), user)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockRepository[T])(nil).Save), v)
 }
 
 // MockMessenger is a mock of Messenger interface.

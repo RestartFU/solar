@@ -4,16 +4,17 @@ import (
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/dragonfly/server/player/chat"
 	"github.com/df-mc/dragonfly/server/world"
-	"github.com/restartfu/solar/internal/adapter/mongodb"
+	"github.com/restartfu/solar/internal/core/domain/model"
 	"github.com/restartfu/solar/internal/core/message"
 	"github.com/restartfu/solar/internal/ports"
 	"strings"
 )
 
 var (
-	Messenger  ports.Messenger = message.Messenger{}
-	Subscriber chat.Subscriber = chat.StdoutSubscriber{}
-	Database   ports.Database  = mongodb.DatabaseAdapter{}
+	Messenger      ports.Messenger              = message.Messenger{}
+	Subscriber     chat.Subscriber              = chat.StdoutSubscriber{}
+	UserRepository ports.Repository[model.User] = nil
+	TeamRepository ports.Repository[model.Team] = nil
 )
 
 func Player(name string, tx *world.Tx) (*player.Player, bool) {

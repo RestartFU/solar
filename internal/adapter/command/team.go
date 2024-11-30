@@ -5,8 +5,11 @@ import (
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/dragonfly/server/world"
 	"github.com/restartfu/solar/internal/core"
-	"github.com/restartfu/solar/internal/core/domain"
+	"github.com/restartfu/solar/internal/core/domain/entity"
+	"github.com/restartfu/solar/internal/core/domain/model"
+	"github.com/restartfu/solar/internal/core/domain/repository"
 	"github.com/restartfu/solar/internal/core/message"
+	"strings"
 )
 
 type TeamCreate struct {
@@ -28,16 +31,16 @@ func NewTeam() cmd.Command {
 func (t TeamCreate) Run(src cmd.Source, out *cmd.Output, _ *world.Tx) {
 	p := src.(*player.Player)
 
-	_, ok := core.Database.LoadTeam(t.Name)
+	_, ok := core.TeamRepository.Find(repository.ConditionName[model.Team](t.Name))
 	if ok {
 		core.Messenger.Message(p, message.Team.CreateAlreadyExists(t.Name))
 		return
 	}
 
-	tm := domain.NewTeam(t.Name, p.Name())
+	tm := model.NewTeam(t.Name, p.Name())
 	core.Subscriber.Message(message.Team.CreateSuccess(t.Name, p.Name()))
 
-	core.Database.SaveTeam(tm)
+	core.TeamRepository.Save(tm)
 }
 
 type TeamInvite struct {
@@ -51,26 +54,36 @@ func (t TeamInvite) Run(src cmd.Source, out *cmd.Output, _ *world.Tx) {
 	p := src.(*player.Player)
 	target := t.Target[0].(*player.Player)
 
-	tm, ok := core.Database.LoadMemberTeam(p.Name())
+	tm, ok := core.TeamRepository.Find(repository.ConditionUserInTeam(p.Name()))
 	if !ok {
 		core.Messenger.Message(p, message.Team.NotInTeam())
 		return
 	}
 
-	if _, ok = core.Database.LoadMemberTeam(target.Name()); ok {
+	if _, canInvite := tm.Member(p.Name(), model.ConditionMemberImportance(entity.ImportancePartial)); !canInvite {
+		core.Messenger.Message(p, "TODO")
+	}
+
+	if _, ok = core.TeamRepository.Find(repository.ConditionUserInTeam(target.Name())); ok {
 		core.Messenger.Message(p, message.Team.TargetAlreadyInTeam(target.Name()))
 		return
 	}
 
-	u, ok := core.Database.LoadUser(target.Name())
+	u, ok := core.UserRepository.Find(repository.ConditionName[model.User](target.Name()))
 	if !ok {
 		core.Messenger.Message(p, message.Error.LoadUserDataError(target.Name()))
 		return
 	}
-	core.Database.SaveUser(u.WithInvitation(tm.DisplayName))
+
+	u, couldInvite := u.WithInvitation(tm.DisplayName())
+	if !couldInvite {
+		// already invited
+		return
+	}
+	core.UserRepository.Save(u)
 
 	core.Messenger.Message(p, message.Team.InviteSent(target.Name()))
-	core.Messenger.Message(target, message.Team.InviteReceived(tm.DisplayName))
+	core.Messenger.Message(target, message.Team.InviteReceived(tm.DisplayName()))
 }
 
 type TeamJoin struct {
@@ -83,25 +96,30 @@ type TeamJoin struct {
 func (t TeamJoin) Run(src cmd.Source, out *cmd.Output, tx *world.Tx) {
 	p := src.(*player.Player)
 
-	tm, ok := core.Database.LoadMemberTeam(p.Name())
+	tm, ok := core.TeamRepository.Find(repository.ConditionUserInTeam(p.Name()))
 	if ok {
 		core.Messenger.Message(p, message.Team.AlreadyInTeam())
 		return
 	}
 
-	u, ok := core.Database.LoadUser(p.Name())
+	u, ok := core.UserRepository.Find(repository.ConditionName[model.User](p.Name()))
 	if !ok {
 		core.Messenger.Message(p, message.Error.LoadUserDataError(p.Name()))
 		return
 	}
 
-	u.Invitations = nil
-	core.Database.SaveUser(u)
-	tm = tm.WithMember(p.Name(), domain.RoleMember)
-	core.Database.SaveTeam(tm)
+	core.UserRepository.Save(u.WithoutInvitations())
+	tm = tm.WithMember(&entity.ImportanceIdentity{
+		Identity: entity.Identity{
+			Name:        strings.ToLower(p.Name()),
+			DisplayName: p.Name(),
+		},
+		Importance: entity.ImportanceMinimal,
+	})
+	core.TeamRepository.Save(tm)
 
-	for name := range tm.Members {
-		pl, online := core.Player(name, tx)
+	for _, name := range tm.Members(model.ConditionMemberImportance(entity.ImportanceMinimal)) {
+		pl, online := core.Player(name.Name, tx)
 		if !online {
 			continue
 		}
@@ -118,19 +136,29 @@ type TeamLeave struct {
 func (t TeamLeave) Run(src cmd.Source, out *cmd.Output, tx *world.Tx) {
 	p := src.(*player.Player)
 
-	tm, ok := core.Database.LoadMemberTeam(p.Name())
+	tm, ok := core.TeamRepository.Find(repository.ConditionUserInTeam(p.Name()))
+	if !ok {
+		core.Messenger.Message(p, message.Team.NotInTeam())
+		return
+	}
+	identity, ok := tm.Member(p.Name(), model.ConditionMemberImportance(entity.ImportanceMinimal))
 	if !ok {
 		core.Messenger.Message(p, message.Team.NotInTeam())
 		return
 	}
 
-	for name := range tm.Members {
-		pl, online := core.Player(name, tx)
+	if identity.Importance == entity.ImportanceFull {
+		// leader cant leave
+		return
+	}
+
+	for _, name := range tm.Members(model.ConditionMemberImportance(entity.ImportanceMinimal)) {
+		pl, online := core.Player(name.Name, tx)
 		if !online {
 			continue
 		}
 		core.Messenger.Message(pl, message.Team.PlayerLeft(p.Name()))
 	}
 
-	core.Database.SaveTeam(tm.WithoutMember(p.Name()))
+	core.TeamRepository.Save(tm.WithoutMember(identity))
 }
