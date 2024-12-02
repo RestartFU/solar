@@ -13,101 +13,153 @@ import (
 	reflect "reflect"
 
 	player "github.com/df-mc/dragonfly/server/player"
-	ports "github.com/restartfu/solar/internal/ports"
+	model "github.com/restartfu/solar/internal/core/model"
 	gomock "go.uber.org/mock/gomock"
 )
 
-// MockIdentifiable is a mock of Identifiable interface.
-type MockIdentifiable struct {
+// MockUserRepository is a mock of UserRepository interface.
+type MockUserRepository struct {
 	ctrl     *gomock.Controller
-	recorder *MockIdentifiableMockRecorder
+	recorder *MockUserRepositoryMockRecorder
 	isgomock struct{}
 }
 
-// MockIdentifiableMockRecorder is the mock recorder for MockIdentifiable.
-type MockIdentifiableMockRecorder struct {
-	mock *MockIdentifiable
+// MockUserRepositoryMockRecorder is the mock recorder for MockUserRepository.
+type MockUserRepositoryMockRecorder struct {
+	mock *MockUserRepository
 }
 
-// NewMockIdentifiable creates a new mock instance.
-func NewMockIdentifiable(ctrl *gomock.Controller) *MockIdentifiable {
-	mock := &MockIdentifiable{ctrl: ctrl}
-	mock.recorder = &MockIdentifiableMockRecorder{mock}
+// NewMockUserRepository creates a new mock instance.
+func NewMockUserRepository(ctrl *gomock.Controller) *MockUserRepository {
+	mock := &MockUserRepository{ctrl: ctrl}
+	mock.recorder = &MockUserRepositoryMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockIdentifiable) EXPECT() *MockIdentifiableMockRecorder {
+func (m *MockUserRepository) EXPECT() *MockUserRepositoryMockRecorder {
 	return m.recorder
 }
 
-// DisplayName mocks base method.
-func (m *MockIdentifiable) DisplayName() string {
+// FindAll mocks base method.
+func (m *MockUserRepository) FindAll() model.User {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DisplayName")
-	ret0, _ := ret[0].(string)
+	ret := m.ctrl.Call(m, "FindAll")
+	ret0, _ := ret[0].(model.User)
 	return ret0
 }
 
-// DisplayName indicates an expected call of DisplayName.
-func (mr *MockIdentifiableMockRecorder) DisplayName() *gomock.Call {
+// FindAll indicates an expected call of FindAll.
+func (mr *MockUserRepositoryMockRecorder) FindAll() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisplayName", reflect.TypeOf((*MockIdentifiable)(nil).DisplayName))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAll", reflect.TypeOf((*MockUserRepository)(nil).FindAll))
 }
 
-// MockRepository is a mock of Repository interface.
-type MockRepository[T ports.Identifiable] struct {
-	ctrl     *gomock.Controller
-	recorder *MockRepositoryMockRecorder[T]
-	isgomock struct{}
-}
-
-// MockRepositoryMockRecorder is the mock recorder for MockRepository.
-type MockRepositoryMockRecorder[T ports.Identifiable] struct {
-	mock *MockRepository[T]
-}
-
-// NewMockRepository creates a new mock instance.
-func NewMockRepository[T ports.Identifiable](ctrl *gomock.Controller) *MockRepository[T] {
-	mock := &MockRepository[T]{ctrl: ctrl}
-	mock.recorder = &MockRepositoryMockRecorder[T]{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockRepository[T]) EXPECT() *MockRepositoryMockRecorder[T] {
-	return m.recorder
-}
-
-// Find mocks base method.
-func (m *MockRepository[T]) Find(conds ...ports.Condition[T]) (T, bool) {
+// FindByName mocks base method.
+func (m *MockUserRepository) FindByName(name string) (model.User, bool) {
 	m.ctrl.T.Helper()
-	varargs := []any{}
-	for _, a := range conds {
-		varargs = append(varargs, a)
-	}
-	ret := m.ctrl.Call(m, "Find", varargs...)
-	ret0, _ := ret[0].(T)
+	ret := m.ctrl.Call(m, "FindByName", name)
+	ret0, _ := ret[0].(model.User)
 	ret1, _ := ret[1].(bool)
 	return ret0, ret1
 }
 
-// Find indicates an expected call of Find.
-func (mr *MockRepositoryMockRecorder[T]) Find(conds ...any) *gomock.Call {
+// FindByName indicates an expected call of FindByName.
+func (mr *MockUserRepositoryMockRecorder) FindByName(name any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Find", reflect.TypeOf((*MockRepository[T])(nil).Find), conds...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByName", reflect.TypeOf((*MockUserRepository)(nil).FindByName), name)
 }
 
 // Save mocks base method.
-func (m *MockRepository[T]) Save(v T) {
+func (m *MockUserRepository) Save(arg0 model.User) {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Save", v)
+	m.ctrl.Call(m, "Save", arg0)
 }
 
 // Save indicates an expected call of Save.
-func (mr *MockRepositoryMockRecorder[T]) Save(v any) *gomock.Call {
+func (mr *MockUserRepositoryMockRecorder) Save(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockRepository[T])(nil).Save), v)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockUserRepository)(nil).Save), arg0)
+}
+
+// MockTeamRepository is a mock of TeamRepository interface.
+type MockTeamRepository struct {
+	ctrl     *gomock.Controller
+	recorder *MockTeamRepositoryMockRecorder
+	isgomock struct{}
+}
+
+// MockTeamRepositoryMockRecorder is the mock recorder for MockTeamRepository.
+type MockTeamRepositoryMockRecorder struct {
+	mock *MockTeamRepository
+}
+
+// NewMockTeamRepository creates a new mock instance.
+func NewMockTeamRepository(ctrl *gomock.Controller) *MockTeamRepository {
+	mock := &MockTeamRepository{ctrl: ctrl}
+	mock.recorder = &MockTeamRepositoryMockRecorder{mock}
+	return mock
+}
+
+// EXPECT returns an object that allows the caller to indicate expected use.
+func (m *MockTeamRepository) EXPECT() *MockTeamRepositoryMockRecorder {
+	return m.recorder
+}
+
+// FindAll mocks base method.
+func (m *MockTeamRepository) FindAll() model.Team {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindAll")
+	ret0, _ := ret[0].(model.Team)
+	return ret0
+}
+
+// FindAll indicates an expected call of FindAll.
+func (mr *MockTeamRepositoryMockRecorder) FindAll() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindAll", reflect.TypeOf((*MockTeamRepository)(nil).FindAll))
+}
+
+// FindByMemberName mocks base method.
+func (m *MockTeamRepository) FindByMemberName(name string) (model.Team, bool) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByMemberName", name)
+	ret0, _ := ret[0].(model.Team)
+	ret1, _ := ret[1].(bool)
+	return ret0, ret1
+}
+
+// FindByMemberName indicates an expected call of FindByMemberName.
+func (mr *MockTeamRepositoryMockRecorder) FindByMemberName(name any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByMemberName", reflect.TypeOf((*MockTeamRepository)(nil).FindByMemberName), name)
+}
+
+// FindByName mocks base method.
+func (m *MockTeamRepository) FindByName(name string) (model.Team, bool) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindByName", name)
+	ret0, _ := ret[0].(model.Team)
+	ret1, _ := ret[1].(bool)
+	return ret0, ret1
+}
+
+// FindByName indicates an expected call of FindByName.
+func (mr *MockTeamRepositoryMockRecorder) FindByName(name any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindByName", reflect.TypeOf((*MockTeamRepository)(nil).FindByName), name)
+}
+
+// Save mocks base method.
+func (m *MockTeamRepository) Save(arg0 model.Team) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "Save", arg0)
+}
+
+// Save indicates an expected call of Save.
+func (mr *MockTeamRepositoryMockRecorder) Save(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Save", reflect.TypeOf((*MockTeamRepository)(nil).Save), arg0)
 }
 
 // MockMessenger is a mock of Messenger interface.

@@ -43,5 +43,5 @@ func (s *Subscriber) UUID() uuid.UUID {
 func (s *Subscriber) Message(a ...any) {
 	str := fmt.Sprint(a...)
 	s.receivedMessages = append(s.receivedMessages, str)
-	s.t.Log(text.ANSI(s))
+	s.t.Log(text.ANSI(str))
 }

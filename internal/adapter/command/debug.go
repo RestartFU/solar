@@ -9,7 +9,7 @@ import (
 )
 
 type DebugActiveClass struct {
-	playerAllower
+	AllowerPlayer
 	Sub cmd.SubCommand `cmd:"class"`
 }
 

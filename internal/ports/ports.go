@@ -2,17 +2,20 @@ package ports
 
 import (
 	"github.com/df-mc/dragonfly/server/player"
+	"github.com/restartfu/solar/internal/core/model"
 )
 
-type Condition[T any] func(T) bool
-
-type Identifiable interface {
-	DisplayName() string
+type UserRepository interface {
+	FindByName(name string) (model.User, bool)
+	FindAll() model.User
+	Save(model.User)
 }
 
-type Repository[T Identifiable] interface {
-	Find(conds ...Condition[T]) (T, bool)
-	Save(v T)
+type TeamRepository interface {
+	FindByMemberName(name string) (model.Team, bool)
+	FindByName(name string) (model.Team, bool)
+	FindAll() model.Team
+	Save(model.Team)
 }
 
 type Messenger interface {

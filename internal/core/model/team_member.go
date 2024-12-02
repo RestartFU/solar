@@ -1,4 +1,4 @@
-package entity
+package model
 
 type Importance int
 
@@ -7,3 +7,8 @@ const (
 	ImportancePartial
 	ImportanceFull
 )
+
+type TeamMember struct {
+	DisplayName string
+	Importance  Importance
+}

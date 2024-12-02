@@ -12,12 +12,11 @@ import (
 )
 
 type Class interface {
-	inventory.Handler
 	Tiers() [4]item.ArmourTier
 	Effects() []effect.Type
 }
 
-func all() []Class {
+func All() []Class {
 	return []Class{
 		Diamond, Bard, Rogue, Archer,
 	}
@@ -39,7 +38,7 @@ func Is(initial, expected Class) bool {
 }
 
 func Of(p *player.Player) Class {
-	for _, c := range all() {
+	for _, c := range All() {
 		if armourIs(p.Armour(), c) {
 			return c
 		}
@@ -48,7 +47,7 @@ func Of(p *player.Player) Class {
 }
 
 func OfTiers(tiers [4]item.ArmourTier) Class {
-	for _, c := range all() {
+	for _, c := range All() {
 		if reflect.DeepEqual(c.Tiers(), tiers) {
 			return c
 		}
