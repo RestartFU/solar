@@ -1,13 +1,13 @@
 package core
 
 import (
+	"github.com/restartfu/solar/internal/core/domain/message"
+	"github.com/restartfu/solar/internal/core/ports"
 	"strings"
 
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/dragonfly/server/player/chat"
 	"github.com/df-mc/dragonfly/server/world"
-	"github.com/restartfu/solar/internal/core/message"
-	"github.com/restartfu/solar/internal/ports"
 )
 
 var (

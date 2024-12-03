@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/restartfu/solar/internal/core/domain/class"
 	"log/slog"
 	"os"
 
@@ -8,9 +9,8 @@ import (
 	"github.com/df-mc/dragonfly/server/cmd"
 	"github.com/df-mc/dragonfly/server/player/chat"
 	"github.com/restartfu/gophig"
-	"github.com/restartfu/solar/internal/adapter/command"
-	"github.com/restartfu/solar/internal/adapter/handler"
-	"github.com/restartfu/solar/internal/core/class"
+	"github.com/restartfu/solar/internal/adapters/command"
+	"github.com/restartfu/solar/internal/adapters/handler"
 )
 
 func main() {

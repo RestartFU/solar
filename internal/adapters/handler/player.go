@@ -1,10 +1,10 @@
 package handler
 
 import (
+	"github.com/restartfu/solar/internal/core/domain/class"
 	"sync/atomic"
 
 	"github.com/df-mc/dragonfly/server/player"
-	"github.com/restartfu/solar/internal/core/class"
 )
 
 var _ player.Handler = &PlayerHandler{}

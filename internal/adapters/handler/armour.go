@@ -4,8 +4,8 @@ import (
 	"github.com/df-mc/dragonfly/server/item"
 	"github.com/df-mc/dragonfly/server/item/inventory"
 	"github.com/df-mc/dragonfly/server/player"
-	"github.com/restartfu/solar/internal/core/class"
-	"github.com/restartfu/solar/internal/core/message"
+	"github.com/restartfu/solar/internal/core/domain/class"
+	"github.com/restartfu/solar/internal/core/domain/message"
 )
 
 var _ inventory.Handler = &ArmourHandler{}

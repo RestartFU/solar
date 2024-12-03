@@ -28,6 +28,10 @@ func (teamMessages) NotInTeam() string {
 	return text.Colourf("<red>You are not in a team</red>")
 }
 
+func (teamMessages) LeaderLeave() string {
+	return text.Colourf("<red>You cannot leave4 your team as a leader, use /t disband instead</red>")
+}
+
 func (teamMessages) TargetAlreadyInTeam(name string) string {
 	return text.Colourf("<red>%s is already in a team</red>", name)
 }

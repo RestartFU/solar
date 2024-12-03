@@ -10,10 +10,10 @@
 package mocks
 
 import (
+	model2 "github.com/restartfu/solar/internal/core/domain/model"
 	reflect "reflect"
 
 	player "github.com/df-mc/dragonfly/server/player"
-	model "github.com/restartfu/solar/internal/core/model"
 	gomock "go.uber.org/mock/gomock"
 )
 
@@ -42,10 +42,10 @@ func (m *MockUserRepository) EXPECT() *MockUserRepositoryMockRecorder {
 }
 
 // FindAll mocks base method.
-func (m *MockUserRepository) FindAll() model.User {
+func (m *MockUserRepository) FindAll() model2.User {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindAll")
-	ret0, _ := ret[0].(model.User)
+	ret0, _ := ret[0].(model2.User)
 	return ret0
 }
 
@@ -56,10 +56,10 @@ func (mr *MockUserRepositoryMockRecorder) FindAll() *gomock.Call {
 }
 
 // FindByName mocks base method.
-func (m *MockUserRepository) FindByName(name string) (model.User, bool) {
+func (m *MockUserRepository) FindByName(name string) (model2.User, bool) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindByName", name)
-	ret0, _ := ret[0].(model.User)
+	ret0, _ := ret[0].(model2.User)
 	ret1, _ := ret[1].(bool)
 	return ret0, ret1
 }
@@ -71,7 +71,7 @@ func (mr *MockUserRepositoryMockRecorder) FindByName(name any) *gomock.Call {
 }
 
 // Save mocks base method.
-func (m *MockUserRepository) Save(arg0 model.User) {
+func (m *MockUserRepository) Save(arg0 model2.User) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "Save", arg0)
 }
@@ -107,10 +107,10 @@ func (m *MockTeamRepository) EXPECT() *MockTeamRepositoryMockRecorder {
 }
 
 // FindAll mocks base method.
-func (m *MockTeamRepository) FindAll() model.Team {
+func (m *MockTeamRepository) FindAll() model2.Team {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindAll")
-	ret0, _ := ret[0].(model.Team)
+	ret0, _ := ret[0].(model2.Team)
 	return ret0
 }
 
@@ -121,10 +121,10 @@ func (mr *MockTeamRepositoryMockRecorder) FindAll() *gomock.Call {
 }
 
 // FindByMemberName mocks base method.
-func (m *MockTeamRepository) FindByMemberName(name string) (model.Team, bool) {
+func (m *MockTeamRepository) FindByMemberName(name string) (model2.Team, bool) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindByMemberName", name)
-	ret0, _ := ret[0].(model.Team)
+	ret0, _ := ret[0].(model2.Team)
 	ret1, _ := ret[1].(bool)
 	return ret0, ret1
 }
@@ -136,10 +136,10 @@ func (mr *MockTeamRepositoryMockRecorder) FindByMemberName(name any) *gomock.Cal
 }
 
 // FindByName mocks base method.
-func (m *MockTeamRepository) FindByName(name string) (model.Team, bool) {
+func (m *MockTeamRepository) FindByName(name string) (model2.Team, bool) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindByName", name)
-	ret0, _ := ret[0].(model.Team)
+	ret0, _ := ret[0].(model2.Team)
 	ret1, _ := ret[1].(bool)
 	return ret0, ret1
 }
@@ -151,7 +151,7 @@ func (mr *MockTeamRepositoryMockRecorder) FindByName(name any) *gomock.Call {
 }
 
 // Save mocks base method.
-func (m *MockTeamRepository) Save(arg0 model.Team) {
+func (m *MockTeamRepository) Save(arg0 model2.Team) {
 	m.ctrl.T.Helper()
 	m.ctrl.Call(m, "Save", arg0)
 }

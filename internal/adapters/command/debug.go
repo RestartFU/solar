@@ -4,8 +4,8 @@ import (
 	"github.com/df-mc/dragonfly/server/cmd"
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/dragonfly/server/world"
-	"github.com/restartfu/solar/internal/core/class"
-	"github.com/restartfu/solar/internal/core/message"
+	"github.com/restartfu/solar/internal/core/domain/class"
+	"github.com/restartfu/solar/internal/core/domain/message"
 )
 
 type DebugActiveClass struct {

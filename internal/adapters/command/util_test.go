@@ -3,7 +3,7 @@ package command_test
 import (
 	"github.com/df-mc/dragonfly/server/cmd"
 	"github.com/df-mc/dragonfly/server/player"
-	"github.com/restartfu/solar/internal/adapter/command"
+	"github.com/restartfu/solar/internal/adapters/command"
 	"github.com/stretchr/testify/require"
 	"testing"
 )

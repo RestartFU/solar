@@ -1,14 +1,18 @@
 package command_test
 
 import (
+	"maps"
 	"testing"
+	"time"
+
+	"github.com/restartfu/solar/internal/core/domain/message"
+	"github.com/restartfu/solar/internal/core/domain/model"
+	"github.com/stretchr/testify/require"
 
 	"github.com/df-mc/dragonfly/server/cmd"
 	"github.com/df-mc/dragonfly/server/world"
-	"github.com/restartfu/solar/internal/adapter/command"
+	"github.com/restartfu/solar/internal/adapters/command"
 	"github.com/restartfu/solar/internal/core"
-	"github.com/restartfu/solar/internal/core/message"
-	"github.com/restartfu/solar/internal/core/model"
 	"github.com/restartfu/solar/mocks"
 	"github.com/restartfu/solar/pkg/testutil"
 	"go.uber.org/mock/gomock"
@@ -192,7 +196,7 @@ func TestTeamJoin(t *testing.T) {
 			mockUserRepository *mocks.MockUserRepository,
 		)
 	}{
-		/*{
+		{
 			name: "player successfully joined team",
 			setup: func(t *testing.T,
 				mockSubscriber *testutil.Subscriber,
@@ -208,8 +212,12 @@ func TestTeamJoin(t *testing.T) {
 				mockUser.Invitations.Set(mockTeamName, time.Hour)
 				require.Len(t, mockUser.Invitations.ActiveKeys(), 1)
 
+				newMockUser := mockUser
+				newMockUser.Invitations = maps.Clone(mockUser.Invitations)
+
+				mockUserRepository.EXPECT().FindByName(mockPlayerName).Return(newMockUser, true)
 				mockTeamRepository.EXPECT().FindByMemberName(mockPlayerName).Return(mockTeam, false)
-				mockUserRepository.EXPECT().FindByName(mockPlayerName).Return(mockUser, true)
+				mockUserRepository.EXPECT().FindByName(mockPlayerName).Return(newMockUser, true)
 
 				clear(mockUser.Invitations)
 				mockUserRepository.EXPECT().Save(mockUser)
@@ -234,8 +242,19 @@ func TestTeamJoin(t *testing.T) {
 				mockTeamRepository *mocks.MockTeamRepository,
 				mockUserRepository *mocks.MockUserRepository,
 			) {
-				mockDatabase.EXPECT().LoadUser(mockPlayerName).Return(mockUser.WithInvitation(mockTeamName), true)
-				mockDatabase.EXPECT().LoadMemberTeam(mockPlayerName).Return(mockTeam, true)
+				var (
+					mockTeam = model.NewTeam(mockTeamName, mockTargetPlayerName)
+					mockUser = model.NewUser(mockPlayerName)
+				)
+
+				mockUser.Invitations.Set(mockTeamName, time.Hour)
+				require.Len(t, mockUser.Invitations.ActiveKeys(), 1)
+
+				newMockUser := mockUser
+				newMockUser.Invitations = maps.Clone(mockUser.Invitations)
+
+				mockUserRepository.EXPECT().FindByName(mockPlayerName).Return(newMockUser, true)
+				mockTeamRepository.EXPECT().FindByMemberName(mockPlayerName).Return(mockTeam, true)
 				mockMessenger.EXPECT(
 					message.Team.AlreadyInTeam(),
 				)
@@ -246,17 +265,27 @@ func TestTeamJoin(t *testing.T) {
 			setup: func(t *testing.T,
 				mockSubscriber *testutil.Subscriber,
 				mockMessenger *testutil.Messenger,
-				mockTeamRepository *mocks.MockRepository[model.Team],
-				mockUserRepository *mocks.MockRepository[model.User],
+				mockTeamRepository *mocks.MockTeamRepository,
+				mockUserRepository *mocks.MockUserRepository,
 			) {
-				mockDatabase.EXPECT().LoadUser(mockPlayerName).Return(mockUser.WithInvitation(mockTeamName), true)
-				mockDatabase.EXPECT().LoadMemberTeam(mockPlayerName).Return(domain.Team{}, false)
-				mockDatabase.EXPECT().LoadUser(mockPlayerName).Return(domain.User{}, false)
+				var (
+					mockUser = model.NewUser(mockPlayerName)
+				)
+
+				mockUser.Invitations.Set(mockTeamName, time.Hour)
+				require.Len(t, mockUser.Invitations.ActiveKeys(), 1)
+
+				newMockUser := mockUser
+				newMockUser.Invitations = maps.Clone(mockUser.Invitations)
+
+				mockUserRepository.EXPECT().FindByName(mockPlayerName).Return(newMockUser, true)
+				mockTeamRepository.EXPECT().FindByMemberName(mockPlayerName).Return(model.Team{}, false)
+				mockUserRepository.EXPECT().FindByName(mockPlayerName).Return(model.User{}, false)
 				mockMessenger.EXPECT(
 					message.Error.LoadUserDataError(mockPlayerName),
 				)
 			},
-		},*/
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			testutil.MockWorld(func(tx *world.Tx) {
@@ -284,17 +313,17 @@ func TestTeamJoin(t *testing.T) {
 	}
 }
 
-/*func TestTeamLeave(t *testing.T) {
-	mockTeam := mockTeam.WithoutMember(mockPlayerName)
-	mockTeam = mockTeam.WithMember(mockTargetPlayerName, domain.RoleLeader)
-	mockTeam = mockTeam.WithMember(mockPlayerName, domain.RoleMember)
+func TestTeamLeave(t *testing.T) {
+	var (
+		mockTeam = model.NewTeam(mockTeamName, mockTargetPlayerName)
+	)
 
 	for _, tc := range []struct {
 		name  string
 		setup func(t *testing.T,
 			mockSubscriber *testutil.Subscriber,
 			mockMessenger *testutil.Messenger,
-			mockDatabase *mocks.MockDatabase,
+			mockTeamRepository *mocks.MockTeamRepository,
 		)
 	}{
 		{
@@ -302,10 +331,14 @@ func TestTeamJoin(t *testing.T) {
 			setup: func(t *testing.T,
 				mockSubscriber *testutil.Subscriber,
 				mockMessenger *testutil.Messenger,
-				mockDatabase *mocks.MockDatabase,
+				mockTeamRepository *mocks.MockTeamRepository,
 			) {
-				mockDatabase.EXPECT().LoadMemberTeam(mockPlayerName).Return(mockTeam, true)
-				mockDatabase.EXPECT().SaveTeam(mockTeam.WithoutMember(mockPlayerName))
+				mockTeam.Members = append(mockTeam.Members, model.TeamMember{
+					DisplayName: mockPlayerName,
+					Importance:  model.ImportanceMinimal,
+				})
+				mockTeamRepository.EXPECT().FindByMemberName(mockPlayerName).Return(mockTeam, true)
+				mockTeamRepository.EXPECT().Save(mockTeam)
 
 				mockMessenger.EXPECT(
 					message.Team.PlayerLeft(mockPlayerName),
@@ -318,12 +351,25 @@ func TestTeamJoin(t *testing.T) {
 			setup: func(t *testing.T,
 				mockSubscriber *testutil.Subscriber,
 				mockMessenger *testutil.Messenger,
-				mockDatabase *mocks.MockDatabase,
+				mockTeamRepository *mocks.MockTeamRepository,
 			) {
-				mockDatabase.EXPECT().LoadMemberTeam(mockPlayerName).Return(domain.Team{}, false)
-				mockMessenger.EXPECT(
-					message.Team.NotInTeam(),
-				)
+				mockTeamRepository.EXPECT().FindByMemberName(mockPlayerName).Return(model.Team{}, false)
+				mockMessenger.EXPECT(message.Team.NotInTeam())
+			},
+		},
+		{
+			name: "player is the leader",
+			setup: func(t *testing.T,
+				mockSubscriber *testutil.Subscriber,
+				mockMessenger *testutil.Messenger,
+				mockTeamRepository *mocks.MockTeamRepository,
+			) {
+				mockTeam.Members = append(mockTeam.Members, model.TeamMember{
+					DisplayName: mockPlayerName,
+					Importance:  model.ImportanceFull,
+				})
+				mockTeamRepository.EXPECT().FindByMemberName(mockPlayerName).Return(mockTeam, true)
+				mockMessenger.EXPECT(message.Team.LeaderLeave())
 			},
 		},
 	} {
@@ -335,18 +381,18 @@ func TestTeamJoin(t *testing.T) {
 				core.Subscriber = mockSubscriber
 				mockMessenger := testutil.NewMessenger(t)
 				core.Messenger = mockMessenger
-				mockDatabaseAdapter := mocks.NewMockDatabase(ctrl)
-				core.Database = mockDatabaseAdapter
+				mockTeamRepositoryAdapter := mocks.NewMockTeamRepository(ctrl)
+				core.TeamRepository = mockTeamRepositoryAdapter
 
 				cmd.Register(command.NewTeam())
 				_ = testutil.MockPlayer(tx, mockTargetPlayerName)
 				mockPlayer := testutil.MockPlayer(tx, mockPlayerName)
 				if tc.setup != nil {
-					tc.setup(t, mockSubscriber, mockMessenger, mockDatabaseAdapter)
+					tc.setup(t, mockSubscriber, mockMessenger, mockTeamRepositoryAdapter)
 				}
 
 				mockPlayer.ExecuteCommand("/team leave")
 			})
 		})
 	}
-}*/
+}

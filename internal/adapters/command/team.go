@@ -1,14 +1,14 @@
 package command
 
 import (
-	"github.com/restartfu/solar/internal/core/message"
+	"github.com/restartfu/solar/internal/core/domain/message"
+	"github.com/restartfu/solar/internal/core/domain/model"
 	"time"
 
 	"github.com/df-mc/dragonfly/server/cmd"
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/dragonfly/server/world"
 	"github.com/restartfu/solar/internal/core"
-	"github.com/restartfu/solar/internal/core/model"
 )
 
 const (
@@ -151,7 +151,7 @@ func (t TeamLeave) Run(src cmd.Source, out *cmd.Output, tx *world.Tx) {
 	}
 
 	if member.Importance == model.ImportanceFull {
-		// leader cant leave
+		core.Messenger.Message(p, message.Team.LeaderLeave())
 		return
 	}
 

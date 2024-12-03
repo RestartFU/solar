@@ -1,7 +1,7 @@
 package message
 
 import (
-	"github.com/restartfu/solar/internal/core/class"
+	"github.com/restartfu/solar/internal/core/domain/class"
 	"github.com/sandertv/gophertunnel/minecraft/text"
 )
 
